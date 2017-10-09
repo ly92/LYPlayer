@@ -16,6 +16,12 @@
 		084A939C1F8B4CA500C3EA7F /* LYPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A939B1F8B4CA500C3EA7F /* LYPlayerUITests.swift */; };
 		084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93AA1F8B53D900C3EA7F /* VideoListViewController.swift */; };
 		084A93AE1F8B55D900C3EA7F /* MoviePlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */; };
+		084A93B11F8B61BF00C3EA7F /* LYPlayerControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */; };
+		084A93B31F8B6E6C00C3EA7F /* LYPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */; };
+		084A93B51F8B722100C3EA7F /* LYPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 084A93B41F8B722100C3EA7F /* LYPlayer.bundle */; };
+		43C1A757CA7C90F84AB7AEFF /* Pods_LYPlayerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AAE31DF80E8F092961AA9F /* Pods_LYPlayerTests.framework */; };
+		46D8EF2C509F61D58362A4F2 /* Pods_LYPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 928ECAB1C7CEC1376B53B4B7 /* Pods_LYPlayer.framework */; };
+		C130D5A41B04C2A625405D84 /* Pods_LYPlayerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E0DC52530CE917E09B889E8 /* Pods_LYPlayerUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +57,18 @@
 		084A939D1F8B4CA500C3EA7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		084A93AA1F8B53D900C3EA7F /* VideoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListViewController.swift; sourceTree = "<group>"; };
 		084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviePlayerViewController.swift; sourceTree = "<group>"; };
+		084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerControllerView.swift; sourceTree = "<group>"; };
+		084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerModel.swift; sourceTree = "<group>"; };
+		084A93B41F8B722100C3EA7F /* LYPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LYPlayer.bundle; sourceTree = "<group>"; };
+		4500661D84D275E5114F18EE /* Pods-LYPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayer/Pods-LYPlayer.debug.xcconfig"; sourceTree = "<group>"; };
+		48DA15B4D4258724172F737E /* Pods-LYPlayerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerUITests/Pods-LYPlayerUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		4EFD88BBD3FA2D3CFC856C52 /* Pods-LYPlayerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerTests/Pods-LYPlayerTests.release.xcconfig"; sourceTree = "<group>"; };
+		5E0DC52530CE917E09B889E8 /* Pods_LYPlayerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LYPlayerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6376942ADB044CD3BB77A299 /* Pods-LYPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayer/Pods-LYPlayer.release.xcconfig"; sourceTree = "<group>"; };
+		7EF6FE080EA85898034C25D7 /* Pods-LYPlayerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerTests/Pods-LYPlayerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		928ECAB1C7CEC1376B53B4B7 /* Pods_LYPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LYPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA3AF020DF845C3FEDAE7A6B /* Pods-LYPlayerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerUITests/Pods-LYPlayerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		F1AAE31DF80E8F092961AA9F /* Pods_LYPlayerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LYPlayerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46D8EF2C509F61D58362A4F2 /* Pods_LYPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43C1A757CA7C90F84AB7AEFF /* Pods_LYPlayerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C130D5A41B04C2A625405D84 /* Pods_LYPlayerUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +106,8 @@
 				084A938F1F8B4CA500C3EA7F /* LYPlayerTests */,
 				084A939A1F8B4CA500C3EA7F /* LYPlayerUITests */,
 				084A93791F8B4CA500C3EA7F /* Products */,
+				3AECA8EC6EE46D5BFA598F9E /* Pods */,
+				BA71DA148942AC2CE8BD3DDC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +124,7 @@
 		084A937A1F8B4CA500C3EA7F /* LYPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				084A93AF1F8B618200C3EA7F /* Player */,
 				084A93AC1F8B55A400C3EA7F /* PlayViewController */,
 				084A93A91F8B535B00C3EA7F /* Views */,
 				084A937B1F8B4CA500C3EA7F /* AppDelegate.swift */,
@@ -147,6 +171,39 @@
 			path = PlayViewController;
 			sourceTree = "<group>";
 		};
+		084A93AF1F8B618200C3EA7F /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */,
+				084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */,
+				084A93B41F8B722100C3EA7F /* LYPlayer.bundle */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		3AECA8EC6EE46D5BFA598F9E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4500661D84D275E5114F18EE /* Pods-LYPlayer.debug.xcconfig */,
+				6376942ADB044CD3BB77A299 /* Pods-LYPlayer.release.xcconfig */,
+				7EF6FE080EA85898034C25D7 /* Pods-LYPlayerTests.debug.xcconfig */,
+				4EFD88BBD3FA2D3CFC856C52 /* Pods-LYPlayerTests.release.xcconfig */,
+				48DA15B4D4258724172F737E /* Pods-LYPlayerUITests.debug.xcconfig */,
+				CA3AF020DF845C3FEDAE7A6B /* Pods-LYPlayerUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		BA71DA148942AC2CE8BD3DDC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				928ECAB1C7CEC1376B53B4B7 /* Pods_LYPlayer.framework */,
+				F1AAE31DF80E8F092961AA9F /* Pods_LYPlayerTests.framework */,
+				5E0DC52530CE917E09B889E8 /* Pods_LYPlayerUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -154,9 +211,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 084A93A01F8B4CA500C3EA7F /* Build configuration list for PBXNativeTarget "LYPlayer" */;
 			buildPhases = (
+				1CC95B15C4DDEF8A4AEAD507 /* [CP] Check Pods Manifest.lock */,
 				084A93741F8B4CA500C3EA7F /* Sources */,
 				084A93751F8B4CA500C3EA7F /* Frameworks */,
 				084A93761F8B4CA500C3EA7F /* Resources */,
+				3839AB61368E5DCEAF657D93 /* [CP] Embed Pods Frameworks */,
+				C8A3BFB609FD31822A999283 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -171,9 +231,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 084A93A31F8B4CA500C3EA7F /* Build configuration list for PBXNativeTarget "LYPlayerTests" */;
 			buildPhases = (
+				97BA9772B20F9E4BAB03BBB8 /* [CP] Check Pods Manifest.lock */,
 				084A93881F8B4CA500C3EA7F /* Sources */,
 				084A93891F8B4CA500C3EA7F /* Frameworks */,
 				084A938A1F8B4CA500C3EA7F /* Resources */,
+				CA5D770F4D30A46A1A905FA0 /* [CP] Embed Pods Frameworks */,
+				3443EA3C48BD2C9D3D9D5F2D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -189,9 +252,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 084A93A61F8B4CA500C3EA7F /* Build configuration list for PBXNativeTarget "LYPlayerUITests" */;
 			buildPhases = (
+				38F5DCC22DF6F81586A3E49B /* [CP] Check Pods Manifest.lock */,
 				084A93931F8B4CA500C3EA7F /* Sources */,
 				084A93941F8B4CA500C3EA7F /* Frameworks */,
 				084A93951F8B4CA500C3EA7F /* Resources */,
+				FD402ACC36D47B0FD528215B /* [CP] Embed Pods Frameworks */,
+				13431B3B646BEA90496D4EEE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -255,6 +321,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				084A93861F8B4CA500C3EA7F /* LaunchScreen.storyboard in Resources */,
+				084A93B51F8B722100C3EA7F /* LYPlayer.bundle in Resources */,
 				084A93831F8B4CA500C3EA7F /* Assets.xcassets in Resources */,
 				084A93811F8B4CA500C3EA7F /* Main.storyboard in Resources */,
 			);
@@ -276,6 +343,144 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		13431B3B646BEA90496D4EEE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYPlayerUITests/Pods-LYPlayerUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1CC95B15C4DDEF8A4AEAD507 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		3443EA3C48BD2C9D3D9D5F2D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYPlayerTests/Pods-LYPlayerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3839AB61368E5DCEAF657D93 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYPlayer/Pods-LYPlayer-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		38F5DCC22DF6F81586A3E49B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		97BA9772B20F9E4BAB03BBB8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C8A3BFB609FD31822A999283 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYPlayer/Pods-LYPlayer-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CA5D770F4D30A46A1A905FA0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYPlayerTests/Pods-LYPlayerTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FD402ACC36D47B0FD528215B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYPlayerUITests/Pods-LYPlayerUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		084A93741F8B4CA500C3EA7F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -283,6 +488,8 @@
 			files = (
 				084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */,
 				084A937E1F8B4CA500C3EA7F /* ViewController.swift in Sources */,
+				084A93B11F8B61BF00C3EA7F /* LYPlayerControllerView.swift in Sources */,
+				084A93B31F8B6E6C00C3EA7F /* LYPlayerModel.swift in Sources */,
 				084A93AE1F8B55D900C3EA7F /* MoviePlayerViewController.swift in Sources */,
 				084A937C1F8B4CA500C3EA7F /* AppDelegate.swift in Sources */,
 			);
@@ -448,6 +655,7 @@
 		};
 		084A93A11F8B4CA500C3EA7F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4500661D84D275E5114F18EE /* Pods-LYPlayer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -463,6 +671,7 @@
 		};
 		084A93A21F8B4CA500C3EA7F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6376942ADB044CD3BB77A299 /* Pods-LYPlayer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -478,6 +687,7 @@
 		};
 		084A93A41F8B4CA500C3EA7F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7EF6FE080EA85898034C25D7 /* Pods-LYPlayerTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -495,6 +705,7 @@
 		};
 		084A93A51F8B4CA500C3EA7F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4EFD88BBD3FA2D3CFC856C52 /* Pods-LYPlayerTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -512,6 +723,7 @@
 		};
 		084A93A71F8B4CA500C3EA7F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 48DA15B4D4258724172F737E /* Pods-LYPlayerUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -528,6 +740,7 @@
 		};
 		084A93A81F8B4CA500C3EA7F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA3AF020DF845C3FEDAE7A6B /* Pods-LYPlayerUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
