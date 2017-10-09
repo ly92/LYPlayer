@@ -14,6 +14,8 @@
 		084A93861F8B4CA500C3EA7F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 084A93841F8B4CA500C3EA7F /* LaunchScreen.storyboard */; };
 		084A93911F8B4CA500C3EA7F /* LYPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93901F8B4CA500C3EA7F /* LYPlayerTests.swift */; };
 		084A939C1F8B4CA500C3EA7F /* LYPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A939B1F8B4CA500C3EA7F /* LYPlayerUITests.swift */; };
+		084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93AA1F8B53D900C3EA7F /* VideoListViewController.swift */; };
+		084A93AE1F8B55D900C3EA7F /* MoviePlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		084A93971F8B4CA500C3EA7F /* LYPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LYPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		084A939B1F8B4CA500C3EA7F /* LYPlayerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerUITests.swift; sourceTree = "<group>"; };
 		084A939D1F8B4CA500C3EA7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		084A93AA1F8B53D900C3EA7F /* VideoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListViewController.swift; sourceTree = "<group>"; };
+		084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviePlayerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,8 @@
 		084A937A1F8B4CA500C3EA7F /* LYPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				084A93AC1F8B55A400C3EA7F /* PlayViewController */,
+				084A93A91F8B535B00C3EA7F /* Views */,
 				084A937B1F8B4CA500C3EA7F /* AppDelegate.swift */,
 				084A937D1F8B4CA500C3EA7F /* ViewController.swift */,
 				084A937F1F8B4CA500C3EA7F /* Main.storyboard */,
@@ -123,6 +129,22 @@
 				084A939D1F8B4CA500C3EA7F /* Info.plist */,
 			);
 			path = LYPlayerUITests;
+			sourceTree = "<group>";
+		};
+		084A93A91F8B535B00C3EA7F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				084A93AA1F8B53D900C3EA7F /* VideoListViewController.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		084A93AC1F8B55A400C3EA7F /* PlayViewController */ = {
+			isa = PBXGroup;
+			children = (
+				084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */,
+			);
+			path = PlayViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,7 +281,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */,
 				084A937E1F8B4CA500C3EA7F /* ViewController.swift in Sources */,
+				084A93AE1F8B55D900C3EA7F /* MoviePlayerViewController.swift in Sources */,
 				084A937C1F8B4CA500C3EA7F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
