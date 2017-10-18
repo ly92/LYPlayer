@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		083098421F972966008EAA5A /* LYPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083098411F972966008EAA5A /* LYPlayer.swift */; };
 		0842EE821F8DEFD200343ADE /* LYValueTrackingSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */; };
 		084A937C1F8B4CA500C3EA7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A937B1F8B4CA500C3EA7F /* AppDelegate.swift */; };
 		084A937E1F8B4CA500C3EA7F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A937D1F8B4CA500C3EA7F /* ViewController.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		083098411F972966008EAA5A /* LYPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayer.swift; sourceTree = "<group>"; };
 		0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYValueTrackingSlider.swift; sourceTree = "<group>"; };
 		084A93781F8B4CA500C3EA7F /* LYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		084A937B1F8B4CA500C3EA7F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				084A93B41F8B722100C3EA7F /* LYPlayer.bundle */,
 				087E24D31F8CC488003A916A /* LYValuePopUpView.swift */,
 				0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */,
+				083098411F972966008EAA5A /* LYPlayer.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */,
+				083098421F972966008EAA5A /* LYPlayer.swift in Sources */,
 				084A937E1F8B4CA500C3EA7F /* ViewController.swift in Sources */,
 				084A93B11F8B61BF00C3EA7F /* LYPlayerControllerView.swift in Sources */,
 				084A93B31F8B6E6C00C3EA7F /* LYPlayerModel.swift in Sources */,
