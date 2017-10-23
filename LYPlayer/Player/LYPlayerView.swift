@@ -8,11 +8,37 @@
 
 import UIKit
 import AVFoundation
+import AVKit
 import MediaPlayer
 
 class LYPlayerView: UIView {
-    var player : AVPlayer!
+    var videoUrl : String!
+    var player : AVPlayerViewController!
     
-
-
+    
+    init(frame: CGRect, url : String) {
+        self.videoUrl = url
+        super.init(frame: frame)
+        self.configLYPlayer()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
+    
+    
+    //setting player
+    func configLYPlayer() {
+        self.player = AVPlayerViewController()
+        self.player.view.frame = self.frame
+        self.player.player = AVPlayer.init(url: URL(string:self.videoUrl)!)
+        self.addSubview(self.player.view)
+        self.player.player?.play()
+        
+        
+    }
+    
 }

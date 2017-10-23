@@ -11,13 +11,22 @@ import UIKit
 class MoviePlayerViewController: UIViewController {
 
     var url = ""
+    @IBOutlet weak var subView: UIView!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         print(self.url)
-        // Do any additional setup after loading the view.
+        
+        
+        self.testPlay()
+    }
+    
+    func testPlay() {
+        let playerView = LYPlayerView.init(frame: self.subView.bounds, url:self.url)
+        self.subView.addSubview(playerView)
+        
     }
 
     override func didReceiveMemoryWarning() {
