@@ -21,6 +21,15 @@
 		084A93B11F8B61BF00C3EA7F /* LYPlayerControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */; };
 		084A93B31F8B6E6C00C3EA7F /* LYPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */; };
 		084A93B51F8B722100C3EA7F /* LYPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 084A93B41F8B722100C3EA7F /* LYPlayer.bundle */; };
+		08526DE51F9DC3BA00C9D716 /* LYPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DE41F9DC3BA00C9D716 /* LYPlayerView.swift */; };
+		08526DE81F9DC8A100C9D716 /* VideoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DE71F9DC8A100C9D716 /* VideoTableViewController.swift */; };
+		08526DEA1F9DC8B200C9D716 /* VideoCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DE91F9DC8B200C9D716 /* VideoCollectionViewController.swift */; };
+		08526DEC1F9DC8D200C9D716 /* DownloadTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DEB1F9DC8D200C9D716 /* DownloadTableViewController.swift */; };
+		08526DF01F9DC90E00C9D716 /* VideoTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DEE1F9DC90E00C9D716 /* VideoTableCell.swift */; };
+		08526DF11F9DC90E00C9D716 /* VideoTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08526DEF1F9DC90E00C9D716 /* VideoTableCell.xib */; };
+		08526DF41F9DC92600C9D716 /* VideoCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DF21F9DC92600C9D716 /* VideoCollectionCell.swift */; };
+		08526DF51F9DC92600C9D716 /* VideoCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08526DF31F9DC92600C9D716 /* VideoCollectionCell.xib */; };
+		08526DFB1F9DD9FB00C9D716 /* videoData.json in Resources */ = {isa = PBXBuildFile; fileRef = 08526DFA1F9DD9FB00C9D716 /* videoData.json */; };
 		087E24D41F8CC488003A916A /* LYValuePopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087E24D31F8CC488003A916A /* LYValuePopUpView.swift */; };
 		43C1A757CA7C90F84AB7AEFF /* Pods_LYPlayerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AAE31DF80E8F092961AA9F /* Pods_LYPlayerTests.framework */; };
 		46D8EF2C509F61D58362A4F2 /* Pods_LYPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 928ECAB1C7CEC1376B53B4B7 /* Pods_LYPlayer.framework */; };
@@ -65,6 +74,15 @@
 		084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerControllerView.swift; sourceTree = "<group>"; };
 		084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerModel.swift; sourceTree = "<group>"; };
 		084A93B41F8B722100C3EA7F /* LYPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LYPlayer.bundle; sourceTree = "<group>"; };
+		08526DE41F9DC3BA00C9D716 /* LYPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerView.swift; sourceTree = "<group>"; };
+		08526DE71F9DC8A100C9D716 /* VideoTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableViewController.swift; sourceTree = "<group>"; };
+		08526DE91F9DC8B200C9D716 /* VideoCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewController.swift; sourceTree = "<group>"; };
+		08526DEB1F9DC8D200C9D716 /* DownloadTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadTableViewController.swift; sourceTree = "<group>"; };
+		08526DEE1F9DC90E00C9D716 /* VideoTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableCell.swift; sourceTree = "<group>"; };
+		08526DEF1F9DC90E00C9D716 /* VideoTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoTableCell.xib; sourceTree = "<group>"; };
+		08526DF21F9DC92600C9D716 /* VideoCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionCell.swift; sourceTree = "<group>"; };
+		08526DF31F9DC92600C9D716 /* VideoCollectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoCollectionCell.xib; sourceTree = "<group>"; };
+		08526DFA1F9DD9FB00C9D716 /* videoData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = videoData.json; sourceTree = "<group>"; };
 		087E24D31F8CC488003A916A /* LYValuePopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYValuePopUpView.swift; sourceTree = "<group>"; };
 		4500661D84D275E5114F18EE /* Pods-LYPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayer/Pods-LYPlayer.debug.xcconfig"; sourceTree = "<group>"; };
 		48DA15B4D4258724172F737E /* Pods-LYPlayerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerUITests/Pods-LYPlayerUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -164,7 +182,12 @@
 		084A93A91F8B535B00C3EA7F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				08526DED1F9DC8EF00C9D716 /* cell */,
 				084A93AA1F8B53D900C3EA7F /* VideoListViewController.swift */,
+				08526DE71F9DC8A100C9D716 /* VideoTableViewController.swift */,
+				08526DE91F9DC8B200C9D716 /* VideoCollectionViewController.swift */,
+				08526DEB1F9DC8D200C9D716 /* DownloadTableViewController.swift */,
+				08526DFA1F9DD9FB00C9D716 /* videoData.json */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -186,8 +209,20 @@
 				087E24D31F8CC488003A916A /* LYValuePopUpView.swift */,
 				0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */,
 				083098411F972966008EAA5A /* LYPlayer.swift */,
+				08526DE41F9DC3BA00C9D716 /* LYPlayerView.swift */,
 			);
 			path = Player;
+			sourceTree = "<group>";
+		};
+		08526DED1F9DC8EF00C9D716 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				08526DEE1F9DC90E00C9D716 /* VideoTableCell.swift */,
+				08526DEF1F9DC90E00C9D716 /* VideoTableCell.xib */,
+				08526DF21F9DC92600C9D716 /* VideoCollectionCell.swift */,
+				08526DF31F9DC92600C9D716 /* VideoCollectionCell.xib */,
+			);
+			path = cell;
 			sourceTree = "<group>";
 		};
 		3AECA8EC6EE46D5BFA598F9E /* Pods */ = {
@@ -330,9 +365,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				084A93861F8B4CA500C3EA7F /* LaunchScreen.storyboard in Resources */,
+				08526DF51F9DC92600C9D716 /* VideoCollectionCell.xib in Resources */,
 				084A93B51F8B722100C3EA7F /* LYPlayer.bundle in Resources */,
 				084A93831F8B4CA500C3EA7F /* Assets.xcassets in Resources */,
+				08526DFB1F9DD9FB00C9D716 /* videoData.json in Resources */,
 				084A93811F8B4CA500C3EA7F /* Main.storyboard in Resources */,
+				08526DF11F9DC90E00C9D716 /* VideoTableCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,13 +533,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08526DEA1F9DC8B200C9D716 /* VideoCollectionViewController.swift in Sources */,
+				08526DE81F9DC8A100C9D716 /* VideoTableViewController.swift in Sources */,
 				084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */,
 				083098421F972966008EAA5A /* LYPlayer.swift in Sources */,
+				08526DF41F9DC92600C9D716 /* VideoCollectionCell.swift in Sources */,
+				08526DF01F9DC90E00C9D716 /* VideoTableCell.swift in Sources */,
 				084A937E1F8B4CA500C3EA7F /* ViewController.swift in Sources */,
 				084A93B11F8B61BF00C3EA7F /* LYPlayerControllerView.swift in Sources */,
 				084A93B31F8B6E6C00C3EA7F /* LYPlayerModel.swift in Sources */,
 				084A93AE1F8B55D900C3EA7F /* MoviePlayerViewController.swift in Sources */,
+				08526DE51F9DC3BA00C9D716 /* LYPlayerView.swift in Sources */,
 				087E24D41F8CC488003A916A /* LYValuePopUpView.swift in Sources */,
+				08526DEC1F9DC8D200C9D716 /* DownloadTableViewController.swift in Sources */,
 				0842EE821F8DEFD200343ADE /* LYValueTrackingSlider.swift in Sources */,
 				084A937C1F8B4CA500C3EA7F /* AppDelegate.swift in Sources */,
 			);
