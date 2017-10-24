@@ -8,12 +8,11 @@
 
 import UIKit
 import AVFoundation
-import AVKit
 import MediaPlayer
 
 class LYPlayerView: UIView {
     var videoUrl : String!
-    var player : AVPlayerViewController!
+    var player : AVPlayer!
     
     
     init(frame: CGRect, url : String) {
@@ -32,12 +31,15 @@ class LYPlayerView: UIView {
     
     //setting player
     func configLYPlayer() {
-        self.player = AVPlayerViewController()
-        self.player.view.frame = self.frame
-        self.player.player = AVPlayer.init(url: URL(string:self.videoUrl)!)
-        self.addSubview(self.player.view)
-        self.player.player?.play()
+        let playerItem = AVPlayerItem.init(url: URL(string:self.videoUrl)!)
         
+        self.player = AVPlayer.init(playerItem: playerItem)
+        
+        let playerLayer = AVPlayerLayer.init(player: self.player)
+        playerLayer.frame = self.bounds
+        self.layer.addSublayer(playerLayer)
+        
+        self.player.play()
         
     }
     
