@@ -9,12 +9,13 @@
 import UIKit
 
 class LYPlayerModel: NSObject {
+    
     /** 视频标题 */
     var title = ""
     /** 视频URL */
     var videoURL = ""
     /** 视频封面本地图片 */
-    var placeholderImage = UIImage.init(named: "LYPlayer.bundle/ZFPlayer_loading_bgView")
+    var placeholderImage = UIImage(named: "LYPlayer.bundle/ZFPlayer_loading_bgView")
     /** 播放器View的父视图（非cell播放使用这个）*/
     var fatherView = UIView()
     
@@ -31,7 +32,7 @@ class LYPlayerModel: NSObject {
     /** 从xx秒开始播放视频(默认0) */
     var seekTime : NSInteger = 0
     // cell播放视频，以下属性必须设置值
-    
+    let scrollView : UIScrollView? = nil
     /** cell所在的indexPath */
     var indexPath : NSIndexPath?
     /**

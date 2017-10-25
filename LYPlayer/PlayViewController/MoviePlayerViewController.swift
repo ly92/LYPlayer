@@ -24,9 +24,9 @@ class MoviePlayerViewController: UIViewController {
     }
     
     func testPlay() {
-        let playerView = LYPlayerView.init(frame: self.subView.bounds, url:self.url)
-        self.subView.addSubview(playerView)
-        
+        let playerModel = LYPlayerModel()
+        playerModel.videoURL = self.url
+        LYPlayerView.shared.playerControlView(self.subView, playerModel)
     }
 
     override func didReceiveMemoryWarning() {
