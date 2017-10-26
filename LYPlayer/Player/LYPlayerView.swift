@@ -39,7 +39,7 @@ class LYPlayerView: UIView {
     var state : LYPlayerState = .LYPlayerStateBuffering{
         didSet{
             if state == .LYPlayerStatePlaying || state == .LYPlayerStateBuffering{
-                
+
             }else if state == .LYPlayerStateFailed{
                 
             }
@@ -180,7 +180,9 @@ extension LYPlayerView{
     
     //停止播放，需要清理播放器和移除观察者
     func stopPlay() {
-        self.player = nil
+        self.playerLayer?.removeFromSuperlayer()
+        self.removeFromSuperview()
+        self.player?.pause()
 //        self.resetPlayer()
     }
     //暂停播放
