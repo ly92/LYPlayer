@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		082756441FA2304B00D5698B /* LYPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 082756431FA2304B00D5698B /* LYPlayer.bundle */; };
 		083098421F972966008EAA5A /* LYPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083098411F972966008EAA5A /* LYPlayer.swift */; };
 		0842EE821F8DEFD200343ADE /* LYValueTrackingSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */; };
 		084A937C1F8B4CA500C3EA7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A937B1F8B4CA500C3EA7F /* AppDelegate.swift */; };
@@ -54,7 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		082756421FA227D900D5698B /* LYPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LYPlayer.bundle; sourceTree = "<group>"; };
+		082756431FA2304B00D5698B /* LYPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LYPlayer.bundle; sourceTree = "<group>"; };
 		083098411F972966008EAA5A /* LYPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayer.swift; sourceTree = "<group>"; };
 		0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYValueTrackingSlider.swift; sourceTree = "<group>"; };
 		084A93781F8B4CA500C3EA7F /* LYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,7 +205,7 @@
 		084A93AF1F8B618200C3EA7F /* Player */ = {
 			isa = PBXGroup;
 			children = (
-				082756421FA227D900D5698B /* LYPlayer.bundle */,
+				082756431FA2304B00D5698B /* LYPlayer.bundle */,
 				084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */,
 				084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */,
 				087E24D31F8CC488003A916A /* LYValuePopUpView.swift */,
@@ -369,6 +370,7 @@
 				084A93861F8B4CA500C3EA7F /* LaunchScreen.storyboard in Resources */,
 				08526DF51F9DC92600C9D716 /* VideoCollectionCell.xib in Resources */,
 				084A93831F8B4CA500C3EA7F /* Assets.xcassets in Resources */,
+				082756441FA2304B00D5698B /* LYPlayer.bundle in Resources */,
 				08526DFB1F9DD9FB00C9D716 /* videoData.json in Resources */,
 				084A93811F8B4CA500C3EA7F /* Main.storyboard in Resources */,
 				08526DF11F9DC90E00C9D716 /* VideoTableCell.xib in Resources */,

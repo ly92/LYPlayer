@@ -15,7 +15,7 @@ class LYPlayerModel: NSObject {
     /** 视频URL */
     var videoURL = ""
     /** 视频封面本地图片 */
-    var placeholderImage = UIImage(named: "LYPlayer.bundle/ZFPlayer_loading_bgView")
+    var placeholderImage = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
     /** 播放器View的父视图（非cell播放使用这个）*/
     var fatherView = UIView()
     

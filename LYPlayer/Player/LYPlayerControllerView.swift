@@ -84,20 +84,19 @@ class LYPlayerControllerView: UIView {
     init() {
         super.init(frame:CGRect.zero)
         
-        self.backBtn.backgroundColor = UIColor.red
-        self.titleLabel.backgroundColor = UIColor.red
-        self.resolutionBtn.backgroundColor = UIColor.red
-        self.downLoadBtn.backgroundColor = UIColor.red
-        self.startBtn.backgroundColor = UIColor.red
-        
-        
         self.addSubview(self.placeholderImageView)
+//        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
         
         self.topImageView.addSubview(self.backBtn)
         self.topImageView.addSubview(self.titleLabel)
         self.topImageView.addSubview(self.resolutionBtn)
         self.topImageView.addSubview(self.downLoadBtn)
         self.addSubview(self.topImageView)
+        self.backBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_back_full"), for: .normal)
+        self.downLoadBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_download"), for: .normal)
+        self.resolutionBtn.setTitle("|高清|", for: .normal)
+        self.topImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_top_shadow")
+        
         
         self.bottomImageView.addSubview(self.startBtn)
         self.bottomImageView.addSubview(self.currentTimeLabel)
@@ -106,6 +105,11 @@ class LYPlayerControllerView: UIView {
         self.bottomImageView.addSubview(self.totalTimeLabel)
         self.bottomImageView.addSubview(self.fullScreenBtn)
         self.addSubview(self.bottomImageView)
+        self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play"), for: .normal)
+        self.currentTimeLabel.text = "0:00"
+        self.totalTimeLabel.text = "10:24"
+        self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_fullscreen"), for: .normal)
+        self.bottomImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_bottom_shadow")
         
         self.addSubview(self.lockBtn)
 //        self.addSubview(self.)
@@ -114,16 +118,23 @@ class LYPlayerControllerView: UIView {
         self.addSubview(failBtn)
         self.addSubview(self.closeBtn)
         self.addSubview(self.bottomProgressView)
+        self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
+        self.repeatBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_repeat_video"), for: .normal)
+        self.failBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_"), for: .normal)
+        self.closeBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_close"), for: .normal)
+        
         
         self.fastView.addSubview(self.fastImageView)
         self.fastView.addSubview(self.fastTimeLabel)
         self.fastView.addSubview(self.fastProgressView)
         self.addSubview(self.fastView)
         
+        
         self.makeSubViewsConstraints()
         
         self.downLoadBtn.isHidden = true
         self.resolutionBtn.isHidden = true
+        self.closeBtn.isHidden = true
         // 初始化时重置controlView
         self.playerResetControlView()
         
