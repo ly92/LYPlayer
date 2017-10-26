@@ -23,7 +23,7 @@ class LYPlayerControllerView: UIView {
     /** 缓冲进度条 */
     var progressView = UIProgressView()
     /** 滑杆 */
-    var videoSlider = LYValueTrackingSlider()
+//    var videoSlider = LYValueTrackingSlider()
     /** 全屏按钮 */
     var fullScreenBtn = UIButton()
     /** 锁定屏幕方向按钮 */
@@ -80,10 +80,16 @@ class LYPlayerControllerView: UIView {
     /** 是否全屏播放 */
     var fullScreen = false
     
-    
-    
+
     init() {
         super.init(frame:CGRect.zero)
+        
+        self.backBtn.backgroundColor = UIColor.red
+        self.titleLabel.backgroundColor = UIColor.red
+        self.resolutionBtn.backgroundColor = UIColor.red
+        self.downLoadBtn.backgroundColor = UIColor.red
+        self.startBtn.backgroundColor = UIColor.red
+        
         
         self.addSubview(self.placeholderImageView)
         
@@ -96,7 +102,7 @@ class LYPlayerControllerView: UIView {
         self.bottomImageView.addSubview(self.startBtn)
         self.bottomImageView.addSubview(self.currentTimeLabel)
         self.bottomImageView.addSubview(self.progressView)
-        self.bottomImageView.addSubview(self.videoSlider)
+//        self.bottomImageView.addSubview(self.videoSlider)
         self.bottomImageView.addSubview(self.totalTimeLabel)
         self.bottomImageView.addSubview(self.fullScreenBtn)
         self.addSubview(self.bottomImageView)
@@ -225,12 +231,12 @@ extension LYPlayerControllerView{
             make.centerY.equalTo(self.startBtn.snp.centerY)
         }
         
-        self.videoSlider.snp.makeConstraints { (make) in
-            make.leading.equalTo(self.currentTimeLabel.snp.trailing).offset(4)
-            make.trailing.equalTo(self.totalTimeLabel.snp.leading).offset(-4)
-            make.centerY.equalTo(self.currentTimeLabel.snp.centerY).offset(-1)
-            make.height.equalTo(30)
-        }
+//        self.videoSlider.snp.makeConstraints { (make) in
+//            make.leading.equalTo(self.currentTimeLabel.snp.trailing).offset(4)
+//            make.trailing.equalTo(self.totalTimeLabel.snp.leading).offset(-4)
+//            make.centerY.equalTo(self.currentTimeLabel.snp.centerY).offset(-1)
+//            make.height.equalTo(30)
+//        }
         
         self.lockBtn.snp.makeConstraints { (make) in
             make.leading.equalTo(self.snp.leading).offset(15)

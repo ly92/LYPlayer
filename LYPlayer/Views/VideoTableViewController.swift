@@ -72,6 +72,12 @@ class VideoTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let cell = tableView.cellForRow(at: indexPath) as! VideoTableCell
+        let playerModel = LYPlayerModel()
+        playerModel.videoURL = cell.jsonModel["playUrl"].stringValue
+        LYPlayerView.shared.playerControlView(cell.subView, playerModel)
+        
     }
 
 }

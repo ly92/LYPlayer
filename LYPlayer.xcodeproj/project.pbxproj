@@ -31,6 +31,7 @@
 		08526DF51F9DC92600C9D716 /* VideoCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08526DF31F9DC92600C9D716 /* VideoCollectionCell.xib */; };
 		08526DFB1F9DD9FB00C9D716 /* videoData.json in Resources */ = {isa = PBXBuildFile; fileRef = 08526DFA1F9DD9FB00C9D716 /* videoData.json */; };
 		087E24D41F8CC488003A916A /* LYValuePopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087E24D31F8CC488003A916A /* LYValuePopUpView.swift */; };
+		08D528751FA18F4100B1F88B /* libReveal.dylib in Sources */ = {isa = PBXBuildFile; fileRef = 08D528741FA18F2B00B1F88B /* libReveal.dylib */; };
 		43C1A757CA7C90F84AB7AEFF /* Pods_LYPlayerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AAE31DF80E8F092961AA9F /* Pods_LYPlayerTests.framework */; };
 		46D8EF2C509F61D58362A4F2 /* Pods_LYPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 928ECAB1C7CEC1376B53B4B7 /* Pods_LYPlayer.framework */; };
 		C130D5A41B04C2A625405D84 /* Pods_LYPlayerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E0DC52530CE917E09B889E8 /* Pods_LYPlayerUITests.framework */; };
@@ -84,6 +85,7 @@
 		08526DF31F9DC92600C9D716 /* VideoCollectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoCollectionCell.xib; sourceTree = "<group>"; };
 		08526DFA1F9DD9FB00C9D716 /* videoData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = videoData.json; sourceTree = "<group>"; };
 		087E24D31F8CC488003A916A /* LYValuePopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYValuePopUpView.swift; sourceTree = "<group>"; };
+		08D528741FA18F2B00B1F88B /* libReveal.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libReveal.dylib; sourceTree = "<group>"; };
 		4500661D84D275E5114F18EE /* Pods-LYPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayer/Pods-LYPlayer.debug.xcconfig"; sourceTree = "<group>"; };
 		48DA15B4D4258724172F737E /* Pods-LYPlayerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerUITests/Pods-LYPlayerUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		4EFD88BBD3FA2D3CFC856C52 /* Pods-LYPlayerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LYPlayerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LYPlayerTests/Pods-LYPlayerTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 		BA71DA148942AC2CE8BD3DDC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08D528741FA18F2B00B1F88B /* libReveal.dylib */,
 				928ECAB1C7CEC1376B53B4B7 /* Pods_LYPlayer.framework */,
 				F1AAE31DF80E8F092961AA9F /* Pods_LYPlayerTests.framework */,
 				5E0DC52530CE917E09B889E8 /* Pods_LYPlayerUITests.framework */,
@@ -533,6 +536,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08D528751FA18F4100B1F88B /* libReveal.dylib in Sources */,
 				08526DEA1F9DC8B200C9D716 /* VideoCollectionViewController.swift in Sources */,
 				08526DE81F9DC8A100C9D716 /* VideoTableViewController.swift in Sources */,
 				084A93AB1F8B53D900C3EA7F /* VideoListViewController.swift in Sources */,
