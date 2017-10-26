@@ -20,7 +20,6 @@
 		084A93AE1F8B55D900C3EA7F /* MoviePlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */; };
 		084A93B11F8B61BF00C3EA7F /* LYPlayerControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */; };
 		084A93B31F8B6E6C00C3EA7F /* LYPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */; };
-		084A93B51F8B722100C3EA7F /* LYPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 084A93B41F8B722100C3EA7F /* LYPlayer.bundle */; };
 		08526DE51F9DC3BA00C9D716 /* LYPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DE41F9DC3BA00C9D716 /* LYPlayerView.swift */; };
 		08526DE81F9DC8A100C9D716 /* VideoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DE71F9DC8A100C9D716 /* VideoTableViewController.swift */; };
 		08526DEA1F9DC8B200C9D716 /* VideoCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08526DE91F9DC8B200C9D716 /* VideoCollectionViewController.swift */; };
@@ -55,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		082756421FA227D900D5698B /* LYPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LYPlayer.bundle; sourceTree = "<group>"; };
 		083098411F972966008EAA5A /* LYPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayer.swift; sourceTree = "<group>"; };
 		0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYValueTrackingSlider.swift; sourceTree = "<group>"; };
 		084A93781F8B4CA500C3EA7F /* LYPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LYPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,7 +74,6 @@
 		084A93AD1F8B55D900C3EA7F /* MoviePlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviePlayerViewController.swift; sourceTree = "<group>"; };
 		084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerControllerView.swift; sourceTree = "<group>"; };
 		084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerModel.swift; sourceTree = "<group>"; };
-		084A93B41F8B722100C3EA7F /* LYPlayer.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LYPlayer.bundle; sourceTree = "<group>"; };
 		08526DE41F9DC3BA00C9D716 /* LYPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LYPlayerView.swift; sourceTree = "<group>"; };
 		08526DE71F9DC8A100C9D716 /* VideoTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableViewController.swift; sourceTree = "<group>"; };
 		08526DE91F9DC8B200C9D716 /* VideoCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewController.swift; sourceTree = "<group>"; };
@@ -205,9 +204,9 @@
 		084A93AF1F8B618200C3EA7F /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				082756421FA227D900D5698B /* LYPlayer.bundle */,
 				084A93B01F8B61BF00C3EA7F /* LYPlayerControllerView.swift */,
 				084A93B21F8B6E6C00C3EA7F /* LYPlayerModel.swift */,
-				084A93B41F8B722100C3EA7F /* LYPlayer.bundle */,
 				087E24D31F8CC488003A916A /* LYValuePopUpView.swift */,
 				0842EE811F8DEFD200343ADE /* LYValueTrackingSlider.swift */,
 				083098411F972966008EAA5A /* LYPlayer.swift */,
@@ -369,7 +368,6 @@
 			files = (
 				084A93861F8B4CA500C3EA7F /* LaunchScreen.storyboard in Resources */,
 				08526DF51F9DC92600C9D716 /* VideoCollectionCell.xib in Resources */,
-				084A93B51F8B722100C3EA7F /* LYPlayer.bundle in Resources */,
 				084A93831F8B4CA500C3EA7F /* Assets.xcassets in Resources */,
 				08526DFB1F9DD9FB00C9D716 /* videoData.json in Resources */,
 				084A93811F8B4CA500C3EA7F /* Main.storyboard in Resources */,
