@@ -95,20 +95,21 @@ class LYPlayerControllerView: UIView {
         self.addSubview(self.placeholderImageView)
         //        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
         
-        self.topImageView.addSubview(self.backBtn)
-        self.topImageView.addSubview(self.titleLabel)
-        self.topImageView.addSubview(self.resolutionBtn)
-        self.topImageView.addSubview(self.downLoadBtn)
         self.addSubview(self.topImageView)
+        self.addSubview(self.backBtn)
+        self.addSubview(self.titleLabel)
+        self.addSubview(self.resolutionBtn)
+        self.addSubview(self.downLoadBtn)
         
         
-        self.bottomImageView.addSubview(self.startBtn)
-        self.bottomImageView.addSubview(self.currentTimeLabel)
-        self.bottomImageView.addSubview(self.progressView)
-        //        self.bottomImageView.addSubview(self.videoSlider)
-        self.bottomImageView.addSubview(self.totalTimeLabel)
-        self.bottomImageView.addSubview(self.fullScreenBtn)
         self.addSubview(self.bottomImageView)
+        self.addSubview(self.startBtn)
+        self.addSubview(self.currentTimeLabel)
+        self.addSubview(self.progressView)
+        //        self.bottomImageView.addSubview(self.videoSlider)
+        self.addSubview(self.totalTimeLabel)
+        self.addSubview(self.fullScreenBtn)
+        
         
         self.addSubview(self.lockBtn)
         //        self.addSubview(self.)
