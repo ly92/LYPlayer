@@ -23,24 +23,42 @@ class LYPlayerView: UIView {
     //MARK: - 可外部调用属性
     var isPauseByUser = false//当前状态是否被用户暂停
     var isAutoPlay = true//是否自动播放
+    var mute = false//是否静音
     //是否因切换页面而导致不在当前显示页面
     var playerPushedOrPresented = false{
         didSet{
             if playerPushedOrPresented{
-                self.pause()
+                self.player?.pause()
             }else{
-                self.play()
+                if !self.isPauseByUser{
+                    self.player?.play()
+                }
             }
         }
     }
-    var mute = false//是否静音
+    
     
     //播放器的几种状态
     var state : LYPlayerState = .LYPlayerStateBuffering{
         didSet{
             if state == .LYPlayerStatePlaying || state == .LYPlayerStateBuffering{
-
+                if self.isPauseByUser{
+                    //如果用户暂停了播放
+                    
+                }else{
+                    //可播放状态时如果是自动播放，则直接播放
+                    if self.isAutoPlay{
+                        self.player?.play()
+                    }
+                }
             }else if state == .LYPlayerStateFailed{
+                
+            }else if state == .LYPlayerStateStopped{
+                //清理内存占用
+                self.clean()
+                
+            }else if state == .LYPlayerStatePause{
+                self.player?.pause()
                 
             }
          }
@@ -125,37 +143,10 @@ class LYPlayerView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.playerLayer?.frame = self.bounds
-    }
-    
-    //setting player
-    private func configLYPlayer() {
-        self.resetPlayer()
 
-        self.urlAsset = AVURLAsset.init(url: URL(string:self.videoUrl)!)
-        // 初始化playerItem
-        self.playerItem = AVPlayerItem.init(asset: self.urlAsset!)
-        // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
-        self.player = AVPlayer.init(playerItem: self.playerItem)
-        // 初始化playerLayer
-        self.playerLayer = AVPlayerLayer.init(player: self.player!)
-        self.playerLayer?.videoGravity = self.videoGravity
-        
-        
-        self.play()
-        
     }
     
-    private func resetPlayer() {
-        
-        self.playerLayer?.removeFromSuperlayer()
-        self.controlView.removeFromSuperview()
-        self.removeFromSuperview()
-        
-        // 移除通知
-        NotificationCenter.default.removeObserver(self)
-        UIDevice.current.endGeneratingDeviceOrientationNotifications()
-    }
+    
     
     
     
@@ -174,30 +165,25 @@ extension LYPlayerView{
     ///   - playerModel: 视频数据
     public func playerControlView(_ superView : UIView, _ playerModel : LYPlayerModel) {
         self.playerModel = playerModel
-        self.configLYPlayer()
         self.setUpSuperView(superView)
     }
     
     //停止播放，需要清理播放器和移除观察者
     func stopPlay() {
-        self.playerLayer?.removeFromSuperlayer()
-        self.removeFromSuperview()
-        self.player?.pause()
-//        self.resetPlayer()
+        self.state = .LYPlayerStateStopped
+        
     }
     //暂停播放
     func pause() {
-        self.player?.pause()
+        self.state = .LYPlayerStatePause
         self.isPauseByUser = true
     }
     //开始播放
     func play() {
-        if self.state == .LYPlayerStatePause{
+        if self.state != .LYPlayerStatePlaying{
             self.state = .LYPlayerStatePlaying
         }
         self.isPauseByUser = false
-        self.player?.play()
-
     }
     
 }
@@ -205,24 +191,112 @@ extension LYPlayerView{
 
 //MARK: - 内部私有方法
 extension LYPlayerView{
+    //setting player
+    private func configLYPlayer() {
+        self.urlAsset = AVURLAsset.init(url: URL(string:self.videoUrl)!)
+        // 初始化playerItem
+        self.playerItem = AVPlayerItem.init(asset: self.urlAsset!)
+        // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
+        self.player = AVPlayer.init(playerItem: self.playerItem)
+        // 初始化playerLayer
+        self.playerLayer = AVPlayerLayer.init(player: self.player!)
+        self.playerLayer?.videoGravity = self.videoGravity
+    }
+
+    //清理占用内存的所有，组件和通知
+    private func clean() {
+        //清理播放组件
+        self.playerLayer?.removeFromSuperlayer()
+        self.controlView.removeFromSuperview()
+        self.removeFromSuperview()
+        self.playerItem = nil//顺带清理观察
+        self.urlAsset = nil
+        self.player = nil
+        self.playerLayer = nil
+        // 移除通知
+        NotificationCenter.default.removeObserver(self)
+        UIDevice.current.endGeneratingDeviceOrientationNotifications()
+    }
+    
+    //视频播放结束的通知
     @objc private func moviePlayDidEnd(noti:NotificationCenter) {
         print(noti)
     }
     
     //设置player的控制层view和superview
     private func setUpSuperView(_ superView : UIView){
+        //保证播放组件不为空
+        self.configLYPlayer()
+        //添加view和layer
         self.frame = superView.bounds
         self.controlView.frame = self.bounds
         self.playerLayer?.frame = self.bounds
-        self.addSubview(self.controlView)
+        self.layer.addSublayer(self.playerLayer!)
         superView.addSubview(self)
+        self.createGesture()
         
+        //3秒后变透明
+        self.addSubview(self.controlView)
     }
+    
+    
+    
 }
 
 
 //MARK: - 播放进度以及播放状态
 extension LYPlayerView : UIGestureRecognizerDelegate{
+    
+    //MARK: 创建手势
+    func createGesture() {
+        //单击
+        let singleTap = UITapGestureRecognizer.init(target: self, action: #selector(LYPlayerView.singleTapAction))
+        singleTap.numberOfTapsRequired = 1
+        singleTap.numberOfTouchesRequired = 1
+        singleTap.delegate = self
+        self.addGestureRecognizer(singleTap)
+        
+        //双击，播放，暂停
+        let doubleTap = UITapGestureRecognizer.init(target: self, action: #selector(LYPlayerView.doubleTapAction))
+        doubleTap.numberOfTapsRequired = 2
+        doubleTap.numberOfTouchesRequired = 1
+        doubleTap.delegate = self
+        self.addGestureRecognizer(doubleTap)
+        
+        // 解决点击当前view时候响应其他控件事件
+        singleTap.delaysTouchesBegan = true
+        doubleTap.delaysTouchesBegan = true
+        // 双击失败响应单击事件
+        singleTap.require(toFail: doubleTap)
+    }
+    //单击
+    @objc func singleTapAction() {
+        if self.controlView.alpha == 0{
+            self.controlView.alpha = 1
+        }else{
+            self.controlView.alpha = 0
+        }
+    }
+    //双击，播放，暂停
+    @objc func doubleTapAction() {
+        if self.state == .LYPlayerStatePlaying{
+            self.state = .LYPlayerStatePause
+        }else{
+            self.state = .LYPlayerStatePlaying
+        }
+    }
+//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        guard let touch = touches.first else{
+//            return
+//        }
+//        if touch.tapCount == 1{
+//            self.singleTapAction()
+//        }else if touch.tapCount == 2{
+//            self.doubleTapAction()
+//        }
+//    }
+    
+    //MARK: 观察playeritem的可播放状态
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         //空对象时不做处理
         if object == nil{ return }
@@ -234,9 +308,8 @@ extension LYPlayerView : UIGestureRecognizerDelegate{
                     if self.player?.currentItem?.status == .readyToPlay{
                         self.setNeedsLayout()
                         self.layoutIfNeeded()
-                        // 添加playerLayer到self.layer
-                        self.layer.insertSublayer(self.playerLayer!, at: 0)
                         self.state = .LYPlayerStatePlaying
+                        
                         // 加载完成后，再添加平移手势
                         // 添加平移手势，用来控制音量、亮度、快进快退
                         let pan = UIPanGestureRecognizer.init(target: self, action: #selector(LYPlayerView.panDirection(_:)))
@@ -279,7 +352,9 @@ extension LYPlayerView : UIGestureRecognizerDelegate{
         
     }
     
-    //当前已缓冲的进度
+    
+    
+    //MARK: 当前已缓冲的进度
     func availableDuration() -> TimeInterval {
         guard let loadedTimeRanges = self.player?.currentItem?.loadedTimeRanges else{
             return 0

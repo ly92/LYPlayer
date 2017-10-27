@@ -12,6 +12,12 @@ import MediaPlayer
 import SnapKit
 
 class LYPlayerControllerView: UIView {
+    
+    var isShow = true//当前是否显示
+    
+    
+    
+    
     /** 标题 */
     var titleLabel = UILabel()
     /** 开始播放按钮 */
@@ -23,13 +29,13 @@ class LYPlayerControllerView: UIView {
     /** 缓冲进度条 */
     var progressView = UIProgressView()
     /** 滑杆 */
-//    var videoSlider = LYValueTrackingSlider()
+    //    var videoSlider = LYValueTrackingSlider()
     /** 全屏按钮 */
     var fullScreenBtn = UIButton()
     /** 锁定屏幕方向按钮 */
     var lockBtn = UIButton()
     /** 系统菊花 */
-
+    
     /** 返回按钮*/
     var backBtn = UIButton()
     /** 关闭按钮*/
@@ -80,48 +86,37 @@ class LYPlayerControllerView: UIView {
     /** 是否全屏播放 */
     var fullScreen = false
     
-
+    
+    
+    
     init() {
         super.init(frame:CGRect.zero)
         
         self.addSubview(self.placeholderImageView)
-//        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
+        //        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
         
         self.topImageView.addSubview(self.backBtn)
         self.topImageView.addSubview(self.titleLabel)
         self.topImageView.addSubview(self.resolutionBtn)
         self.topImageView.addSubview(self.downLoadBtn)
         self.addSubview(self.topImageView)
-        self.backBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_back_full"), for: .normal)
-        self.downLoadBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_download"), for: .normal)
-        self.resolutionBtn.setTitle("|高清|", for: .normal)
-        self.topImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_top_shadow")
         
         
         self.bottomImageView.addSubview(self.startBtn)
         self.bottomImageView.addSubview(self.currentTimeLabel)
         self.bottomImageView.addSubview(self.progressView)
-//        self.bottomImageView.addSubview(self.videoSlider)
+        //        self.bottomImageView.addSubview(self.videoSlider)
         self.bottomImageView.addSubview(self.totalTimeLabel)
         self.bottomImageView.addSubview(self.fullScreenBtn)
         self.addSubview(self.bottomImageView)
-        self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play"), for: .normal)
-        self.currentTimeLabel.text = "0:00"
-        self.totalTimeLabel.text = "10:24"
-        self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_fullscreen"), for: .normal)
-        self.bottomImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_bottom_shadow")
         
         self.addSubview(self.lockBtn)
-//        self.addSubview(self.)
+        //        self.addSubview(self.)
         self.addSubview(self.repeatBtn)
         self.addSubview(self.playeBtn)
         self.addSubview(failBtn)
         self.addSubview(self.closeBtn)
         self.addSubview(self.bottomProgressView)
-        self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
-        self.repeatBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_repeat_video"), for: .normal)
-        self.failBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_"), for: .normal)
-        self.closeBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_close"), for: .normal)
         
         
         self.fastView.addSubview(self.fastImageView)
@@ -147,6 +142,7 @@ class LYPlayerControllerView: UIView {
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerControllerView.onDeviceOrientationChange), name: Notification.Name.UIDeviceOrientationDidChange, object: nil)
         
+        self.setUpDefaultViewAttribute()
     }
     
     deinit {
@@ -158,9 +154,45 @@ class LYPlayerControllerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+}
+
+//MARK: - 按钮点击事件
+extension LYPlayerControllerView{
+    //锁定屏幕，解锁
+    @objc func lockBtnAction() {
+        self.lockBtn.isSelected = !self.lockBtn.isSelected
+    }
+    //重播
+    @objc func repeatBtnAction() {
+        
+    }
+    //左下角的播放按钮事件
+    @objc func playBtnAction() {
+        self.startBtn.isSelected = !self.startBtn.isSelected
+    }
+    //右下角的全屏按钮事件
+    @objc func fullScreenBtnAction() {
+        self.fullScreenBtn.isSelected = !self.fullScreenBtn.isSelected
+    }
+    //左上角返回
+    @objc func backBtnAction() {
+        
+    }
+    //右上角关闭
+    @objc func closeBtnAction() {
+        
+    }
+    //右上角切换清晰度
+    @objc func resolutionBtnAction() {
+        
+    }
+    //右上角下载
+    @objc func downloadBtnAction() {
+        
+    }
     
 }
+
 
 extension LYPlayerControllerView{
     //MARK: - 约束
@@ -242,12 +274,12 @@ extension LYPlayerControllerView{
             make.centerY.equalTo(self.startBtn.snp.centerY)
         }
         
-//        self.videoSlider.snp.makeConstraints { (make) in
-//            make.leading.equalTo(self.currentTimeLabel.snp.trailing).offset(4)
-//            make.trailing.equalTo(self.totalTimeLabel.snp.leading).offset(-4)
-//            make.centerY.equalTo(self.currentTimeLabel.snp.centerY).offset(-1)
-//            make.height.equalTo(30)
-//        }
+        //        self.videoSlider.snp.makeConstraints { (make) in
+        //            make.leading.equalTo(self.currentTimeLabel.snp.trailing).offset(4)
+        //            make.trailing.equalTo(self.totalTimeLabel.snp.leading).offset(-4)
+        //            make.centerY.equalTo(self.currentTimeLabel.snp.centerY).offset(-1)
+        //            make.height.equalTo(30)
+        //        }
         
         self.lockBtn.snp.makeConstraints { (make) in
             make.leading.equalTo(self.snp.leading).offset(15)
@@ -264,7 +296,7 @@ extension LYPlayerControllerView{
             make.width.height.equalTo(50)
         }
         
-//        self
+        //        self
         
         self.failBtn.snp.makeConstraints { (make) in
             make.center.equalTo(self)
@@ -299,7 +331,7 @@ extension LYPlayerControllerView{
             make.leading.trailing.bottom.equalTo(0)
         }
     }
-
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -315,6 +347,44 @@ extension LYPlayerControllerView{
     func playerResetControlView() {
         
     }
+    
+    func setUpDefaultViewAttribute() {
+        self.backBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_back_full"), for: .normal)
+        self.downLoadBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_download"), for: .normal)
+        self.resolutionBtn.setTitle("|高清|", for: .normal)
+        self.topImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_top_shadow")
+        
+        self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play"), for: .normal)
+        self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_pause"), for: .selected)
+        self.currentTimeLabel.text = "0:00"
+        self.currentTimeLabel.textColor = UIColor.white
+        self.currentTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
+        self.totalTimeLabel.text = "10:24"
+        self.totalTimeLabel.textColor = UIColor.white
+        self.totalTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
+        self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_fullscreen"), for: .normal)
+        self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_shrinkscreen"), for: .selected)
+        self.bottomImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_bottom_shadow")
+        
+        self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
+        self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_lock_nor"), for: .selected)
+        self.repeatBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_repeat_video"), for: .normal)
+        self.failBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_"), for: .normal)
+        self.closeBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_close"), for: .normal)
+        
+        
+        self.lockBtn.addTarget(self, action: #selector(LYPlayerControllerView.lockBtnAction), for: .touchUpInside)
+        self.closeBtn.addTarget(self, action: #selector(LYPlayerControllerView.closeBtnAction), for: .touchUpInside)
+        self.fullScreenBtn.addTarget(self, action: #selector(LYPlayerControllerView.fullScreenBtnAction), for: .touchUpInside)
+        self.startBtn.addTarget(self, action: #selector(LYPlayerControllerView.playBtnAction), for: .touchUpInside)
+        self.resolutionBtn.addTarget(self, action: #selector(LYPlayerControllerView.resolutionBtnAction), for: .touchUpInside)
+        
+        self.repeatBtn.addTarget(self, action: #selector(LYPlayerControllerView.repeatBtnAction), for: .touchUpInside)
+        self.downLoadBtn.addTarget(self, action: #selector(LYPlayerControllerView.downloadBtnAction), for: .touchUpInside)
+        self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
+        
+    }
+    
     //app进入后台
     @objc func appDidEnterBackground() {
         
@@ -369,6 +439,28 @@ extension LYPlayerControllerView{
     }
     
     
+}
+
+//MARK: - 外部调用方法
+extension LYPlayerControllerView{
+    //设置隐藏
+    func hideControlView() {
+        if !self.isShow{
+            return//已隐藏
+        }
+        if self.lockBtn.isSelected{
+            
+        }
+        
+    }
+    
+    //显示按钮
+    func showControlView() {
+        if self.isShow{
+            return//已展示
+        }
+        
+    }
 }
 
 
