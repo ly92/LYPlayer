@@ -182,6 +182,8 @@ extension LYPlayerView{
 extension LYPlayerView{
     //setting player
     private func configLYPlayer() {
+        self.clean()
+        
         self.urlAsset = AVURLAsset.init(url: URL(string:self.videoUrl)!)
         // 初始化playerItem
         self.playerItem = AVPlayerItem.init(asset: self.urlAsset!)
