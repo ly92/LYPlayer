@@ -114,9 +114,7 @@ class LYPlayerView: UIView {
     fileprivate var playerLayer : AVPlayerLayer?//播放层
     fileprivate var urlAsset : AVURLAsset?//用于播放网络音视频资源
     fileprivate var videoGravity = AVLayerVideoGravity.resizeAspect//视频填充模式
-    
-    //视频控制器view
-    fileprivate var controlView = LYPlayerControllerView()
+    fileprivate var controlView : LYPlayerControllerView?//视频控制器view
     //视频信息
     fileprivate var playerModel = LYPlayerModel(){
         didSet{
@@ -207,7 +205,8 @@ extension LYPlayerView{
     private func clean() {
         //清理播放组件
         self.playerLayer?.removeFromSuperlayer()
-        self.controlView.removeFromSuperview()
+        self.controlView?.removeFromSuperview()
+        self.controlView = nil
         self.removeFromSuperview()
         self.playerItem = nil//顺带清理观察
         self.urlAsset = nil
@@ -227,16 +226,17 @@ extension LYPlayerView{
     private func setUpSuperView(_ superView : UIView){
         //保证播放组件不为空
         self.configLYPlayer()
+        self.controlView = LYPlayerControllerView()
         //添加view和layer
         self.frame = superView.bounds
-        self.controlView.frame = self.bounds
+        self.controlView?.frame = self.bounds
         self.playerLayer?.frame = self.bounds
         self.layer.addSublayer(self.playerLayer!)
         superView.addSubview(self)
         self.createGesture()
         
         //3秒后变透明
-        self.addSubview(self.controlView)
+        self.addSubview(self.controlView!)
     }
     
     
@@ -271,10 +271,10 @@ extension LYPlayerView : UIGestureRecognizerDelegate{
     }
     //单击
     @objc func singleTapAction() {
-        if self.controlView.alpha == 0{
-            self.controlView.alpha = 1
+        if self.controlView!.isShow{
+            self.controlView?.hideControlView()
         }else{
-            self.controlView.alpha = 0
+            self.controlView?.showControlView()
         }
     }
     //双击，播放，暂停

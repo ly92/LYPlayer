@@ -13,8 +13,27 @@ import SnapKit
 
 class LYPlayerControllerView: UIView {
     
-    var isShow = true//当前是否显示
-    
+    var isShow = false//当前是否显示
+    //当前是否操作中
+    fileprivate var __isOperationing = false
+    fileprivate var isOperationing : Bool{
+        set{
+            //如果设置当前为操作状态且旧值为false，5秒后自动变为非操作状态，设置当前为非操作状态时询问隐藏
+            if newValue{
+                if (!__isOperationing){
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
+                        self.isOperationing = false
+                    }
+                }
+            }else{
+                self.hideControlView()
+            }
+            __isOperationing = newValue
+        }
+        get{
+            return __isOperationing
+        }
+    }
     
     
     
@@ -42,10 +61,14 @@ class LYPlayerControllerView: UIView {
     var closeBtn = UIButton()
     /** 重播按钮 */
     var repeatBtn = UIButton()
-    /** bottomView*/
+    /** bottomImageView*/
     var bottomImageView = UIImageView()
-    /** topView */
+    /** topImageView */
     var topImageView = UIImageView()
+    /** bottomView*/
+    var bottomView = UIView()
+    /** topView */
+    var topView = UIView()
     /** 缓存按钮 */
     var downLoadBtn = UIButton()
     /** 切换分辨率按钮 */
@@ -96,20 +119,20 @@ class LYPlayerControllerView: UIView {
         //        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
         
         self.addSubview(self.topImageView)
-        self.addSubview(self.backBtn)
-        self.addSubview(self.titleLabel)
-        self.addSubview(self.resolutionBtn)
-        self.addSubview(self.downLoadBtn)
-        
+        self.topView.addSubview(self.backBtn)
+        self.topView.addSubview(self.titleLabel)
+        self.topView.addSubview(self.resolutionBtn)
+        self.topView.addSubview(self.downLoadBtn)
+        self.addSubview(self.topView)
         
         self.addSubview(self.bottomImageView)
-        self.addSubview(self.startBtn)
-        self.addSubview(self.currentTimeLabel)
-        self.addSubview(self.progressView)
-        //        self.bottomImageView.addSubview(self.videoSlider)
-        self.addSubview(self.totalTimeLabel)
-        self.addSubview(self.fullScreenBtn)
-        
+        self.bottomView.addSubview(self.startBtn)
+        self.bottomView.addSubview(self.currentTimeLabel)
+        self.bottomView.addSubview(self.progressView)
+        //        self.bottomView.addSubview(self.videoSlider)
+        self.bottomView.addSubview(self.totalTimeLabel)
+        self.bottomView.addSubview(self.fullScreenBtn)
+        self.addSubview(self.bottomView)
         
         self.addSubview(self.lockBtn)
         //        self.addSubview(self.)
@@ -157,44 +180,6 @@ class LYPlayerControllerView: UIView {
     
 }
 
-//MARK: - 按钮点击事件
-extension LYPlayerControllerView{
-    //锁定屏幕，解锁
-    @objc func lockBtnAction() {
-        self.lockBtn.isSelected = !self.lockBtn.isSelected
-    }
-    //重播
-    @objc func repeatBtnAction() {
-        
-    }
-    //左下角的播放按钮事件
-    @objc func playBtnAction() {
-        self.startBtn.isSelected = !self.startBtn.isSelected
-    }
-    //右下角的全屏按钮事件
-    @objc func fullScreenBtnAction() {
-        self.fullScreenBtn.isSelected = !self.fullScreenBtn.isSelected
-    }
-    //左上角返回
-    @objc func backBtnAction() {
-        
-    }
-    //右上角关闭
-    @objc func closeBtnAction() {
-        
-    }
-    //右上角切换清晰度
-    @objc func resolutionBtnAction() {
-        
-    }
-    //右上角下载
-    @objc func downloadBtnAction() {
-        
-    }
-    
-}
-
-
 extension LYPlayerControllerView{
     //MARK: - 约束
     func makeSubViewsConstraints() {
@@ -208,10 +193,14 @@ extension LYPlayerControllerView{
             make.width.height.equalTo(20)// 设置宽、高
         }
         
-        self.topImageView.snp.makeConstraints { (make) in
+        self.topView.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(self)
             make.top.equalTo(self.snp.top).offset(0)
             make.height.equalTo(50)
+        }
+        
+        self.topImageView.snp.makeConstraints { (make) in
+            make.leading.trailing.top.height.equalTo(self.topView)
         }
         
         self.backBtn.snp.makeConstraints { (make) in
@@ -240,9 +229,15 @@ extension LYPlayerControllerView{
             make.centerY.equalTo(self.backBtn.snp.centerY)
         }
         
-        self.bottomImageView.snp.makeConstraints { (make) in
+        self.bottomView.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(0)
             make.height.equalTo(50)
+        }
+        
+        self.bottomImageView.snp.makeConstraints { (make) in
+            //            make.leading.trailing.bottom.equalTo(0)
+            //            make.height.equalTo(50)
+            make.leading.trailing.bottom.height.equalTo(self.bottomView)
         }
         
         self.startBtn.snp.makeConstraints { (make) in
@@ -384,6 +379,7 @@ extension LYPlayerControllerView{
         self.downLoadBtn.addTarget(self, action: #selector(LYPlayerControllerView.downloadBtnAction), for: .touchUpInside)
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
         
+        self.showControlView()
     }
     
     //app进入后台
@@ -442,15 +438,66 @@ extension LYPlayerControllerView{
     
 }
 
+//MARK: - 按钮点击事件
+extension LYPlayerControllerView{
+    //锁定屏幕，解锁
+    @objc func lockBtnAction() {
+        self.isOperationing = true
+        self.lockBtn.isSelected = !self.lockBtn.isSelected
+        if self.isShow{
+            self.isShow = false
+            self.showControlView()
+        }
+    }
+    //重播
+    @objc func repeatBtnAction() {
+        self.isOperationing = true
+    }
+    //左下角的播放按钮事件
+    @objc func playBtnAction() {
+        self.isOperationing = true
+        self.startBtn.isSelected = !self.startBtn.isSelected
+    }
+    //右下角的全屏按钮事件
+    @objc func fullScreenBtnAction() {
+        self.isOperationing = true
+        self.fullScreenBtn.isSelected = !self.fullScreenBtn.isSelected
+    }
+    //左上角返回
+    @objc func backBtnAction() {
+        self.isOperationing = true
+    }
+    //右上角关闭
+    @objc func closeBtnAction() {
+        self.isOperationing = true
+    }
+    //右上角切换清晰度
+    @objc func resolutionBtnAction() {
+        self.isOperationing = true
+    }
+    //右上角下载
+    @objc func downloadBtnAction() {
+        self.isOperationing = true
+    }
+    
+}
+
+
+
+
 //MARK: - 外部调用方法
 extension LYPlayerControllerView{
     //设置隐藏
     func hideControlView() {
-        if !self.isShow{
+
+        if !self.isShow || self.isOperationing{
             return//已隐藏
         }
-        if self.lockBtn.isSelected{
-            
+        self.isShow = !self.isShow
+        UIView.animate(withDuration: 0.5) {
+            self.topView.alpha = 0
+            self.bottomView.alpha = 0
+            self.lockBtn.alpha = 0
         }
         
     }
@@ -460,8 +507,22 @@ extension LYPlayerControllerView{
         if self.isShow{
             return//已展示
         }
-        
+        self.isShow = !self.isShow
+        self.lockBtn.alpha = 1
+        if self.lockBtn.isSelected{
+            self.topView.alpha = 0
+            self.bottomView.alpha = 0
+        }else{
+            self.topView.alpha = 1
+            self.bottomView.alpha = 1
+        }
+        //3秒后自动隐藏
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
+            self.hideControlView()
+        }
     }
+    
+    
 }
 
 
