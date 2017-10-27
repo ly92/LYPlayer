@@ -11,9 +11,96 @@ import AVFoundation
 import MediaPlayer
 import SnapKit
 
+protocol LYPlayerControllerViewDelegate {
+    func ly_playerControllerViewPlay()
+    func ly_playerControllerViewPause()
+    func ly_playerControllerViewRepeat()
+    func ly_playerControllerViewFullScreen(_ isFull:Bool)
+    func ly_playerControllerViewDownload()
+    func ly_playerControllerViewResolution()
+    func ly_playerControllerViewBack()
+    func ly_playerControllerViewClose()
+    func ly_playerControllerViewLock(_ isLock:Bool)
+}
+
 class LYPlayerControllerView: UIView {
     
+   
+    var delegate : LYPlayerControllerViewDelegate?
+    
+    
+    
+    /** 标题 */
+    fileprivate var titleLabel = UILabel()
+    /** 开始播放按钮 */
+    fileprivate var startBtn = UIButton()
+    /** 当前播放时长label */
+    fileprivate var currentTimeLabel = UILabel()
+    /** 视频总时长label */
+    fileprivate var totalTimeLabel = UILabel()
+    /** 缓冲进度条 */
+    fileprivate var progressView = UIProgressView()
+    /** 滑杆 */
+    //    var videoSlider = LYValueTrackingSlider()
+    /** 全屏按钮 */
+    fileprivate var fullScreenBtn = UIButton()
+    /** 锁定屏幕方向按钮 */
+    fileprivate var lockBtn = UIButton()
+    /** 系统菊花 */
+    
+    /** 返回按钮*/
+    fileprivate var backBtn = UIButton()
+    /** 关闭按钮*/
+    fileprivate var closeBtn = UIButton()
+    /** 重播按钮 */
+    fileprivate var repeatBtn = UIButton()
+    /** bottomImageView*/
+    fileprivate var bottomImageView = UIImageView()
+    /** topImageView */
+    fileprivate var topImageView = UIImageView()
+    /** bottomView*/
+    fileprivate var bottomView = UIView()
+    /** topView */
+    fileprivate var topView = UIView()
+    /** 缓存按钮 */
+    fileprivate var downLoadBtn = UIButton()
+    /** 切换分辨率按钮 */
+    fileprivate var resolutionBtn = UIButton()
+    /** 分辨率的View */
+    fileprivate var resolutionView = UIView()
+    /** 播放按钮 */
+    fileprivate var playeBtn = UIButton()
+    /** 加载失败按钮 */
+    fileprivate var failBtn = UIButton()
+    /** 快进快退View*/
+    fileprivate var fastView = UIView()
+    /** 快进快退进度progress*/
+    fileprivate var fastProgressView = UIProgressView()
+    /** 快进快退时间*/
+    fileprivate var fastTimeLabel = UILabel()
+    /** 快进快退ImageView*/
+    fileprivate var fastImageView = UIImageView()
+    /** 当前选中的分辨率btn按钮 */
+    fileprivate var resoultionCurrentBtn = UIButton()
+    /** 占位图 */
+    fileprivate var placeholderImageView = UIImageView()
+    /** 控制层消失时候在底部显示的播放进度progress */
+    fileprivate var bottomProgressView = UIProgressView()
+    /** 分辨率的名称 */
+    fileprivate var resolutionArray = Array<Any>()
+    
+    /** 显示控制层 */
     var isShow = false//当前是否显示
+    /** 小屏播放 */
+    fileprivate var shrink = false
+    /** 在cell上播放 */
+    fileprivate var cellVideo = false
+    /** 是否拖拽slider控制播放进度 */
+    fileprivate var dragged = false
+    /** 是否播放结束 */
+    fileprivate var playeEnd = false
+    /** 是否全屏播放 */
+    fileprivate var fullScreen = false
     //当前是否操作中
     fileprivate var __isOperationing = false
     fileprivate var isOperationing : Bool{
@@ -34,81 +121,6 @@ class LYPlayerControllerView: UIView {
             return __isOperationing
         }
     }
-    
-    
-    
-    /** 标题 */
-    var titleLabel = UILabel()
-    /** 开始播放按钮 */
-    var startBtn = UIButton()
-    /** 当前播放时长label */
-    var currentTimeLabel = UILabel()
-    /** 视频总时长label */
-    var totalTimeLabel = UILabel()
-    /** 缓冲进度条 */
-    var progressView = UIProgressView()
-    /** 滑杆 */
-    //    var videoSlider = LYValueTrackingSlider()
-    /** 全屏按钮 */
-    var fullScreenBtn = UIButton()
-    /** 锁定屏幕方向按钮 */
-    var lockBtn = UIButton()
-    /** 系统菊花 */
-    
-    /** 返回按钮*/
-    var backBtn = UIButton()
-    /** 关闭按钮*/
-    var closeBtn = UIButton()
-    /** 重播按钮 */
-    var repeatBtn = UIButton()
-    /** bottomImageView*/
-    var bottomImageView = UIImageView()
-    /** topImageView */
-    var topImageView = UIImageView()
-    /** bottomView*/
-    var bottomView = UIView()
-    /** topView */
-    var topView = UIView()
-    /** 缓存按钮 */
-    var downLoadBtn = UIButton()
-    /** 切换分辨率按钮 */
-    var resolutionBtn = UIButton()
-    /** 分辨率的View */
-    var resolutionView = UIView()
-    /** 播放按钮 */
-    var playeBtn = UIButton()
-    /** 加载失败按钮 */
-    var failBtn = UIButton()
-    /** 快进快退View*/
-    var fastView = UIView()
-    /** 快进快退进度progress*/
-    var fastProgressView = UIProgressView()
-    /** 快进快退时间*/
-    var fastTimeLabel = UILabel()
-    /** 快进快退ImageView*/
-    var fastImageView = UIImageView()
-    /** 当前选中的分辨率btn按钮 */
-    var resoultionCurrentBtn = UIButton()
-    /** 占位图 */
-    var placeholderImageView = UIImageView()
-    /** 控制层消失时候在底部显示的播放进度progress */
-    var bottomProgressView = UIProgressView()
-    /** 分辨率的名称 */
-    var resolutionArray = Array<Any>()
-    
-    /** 显示控制层 */
-    var showing = false
-    /** 小屏播放 */
-    var shrink = false
-    /** 在cell上播放 */
-    var cellVideo = false
-    /** 是否拖拽slider控制播放进度 */
-    var dragged = false
-    /** 是否播放结束 */
-    var playeEnd = false
-    /** 是否全屏播放 */
-    var fullScreen = false
-    
     
     
     
@@ -448,36 +460,66 @@ extension LYPlayerControllerView{
             self.isShow = false
             self.showControlView()
         }
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewLock(self.lockBtn.isSelected)
+        }
     }
     //重播
     @objc func repeatBtnAction() {
         self.isOperationing = true
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewRepeat()
+        }
     }
     //左下角的播放按钮事件
     @objc func playBtnAction() {
         self.isOperationing = true
         self.startBtn.isSelected = !self.startBtn.isSelected
+        if self.startBtn.isSelected{
+            if self.delegate != nil{
+                self.delegate?.ly_playerControllerViewPlay()
+            }
+        }else{
+            if self.delegate != nil{
+                self.delegate?.ly_playerControllerViewPause()
+            }
+        }
     }
     //右下角的全屏按钮事件
     @objc func fullScreenBtnAction() {
         self.isOperationing = true
         self.fullScreenBtn.isSelected = !self.fullScreenBtn.isSelected
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewFullScreen(self.fullScreen)
+        }
     }
     //左上角返回
     @objc func backBtnAction() {
         self.isOperationing = true
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewBack()
+        }
     }
     //右上角关闭
     @objc func closeBtnAction() {
         self.isOperationing = true
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewClose()
+        }
     }
     //右上角切换清晰度
     @objc func resolutionBtnAction() {
         self.isOperationing = true
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewResolution()
+        }
     }
     //右上角下载
     @objc func downloadBtnAction() {
         self.isOperationing = true
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewDownload()
+        }
     }
     
 }

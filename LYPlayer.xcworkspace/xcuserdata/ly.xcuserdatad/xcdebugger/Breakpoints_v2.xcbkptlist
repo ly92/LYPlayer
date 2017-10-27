@@ -42,12 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "530789644.94948"
+            timestampString = "530790882.209016"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "352"
-            endingLineNumber = "352"
-            landmarkName = "panDirection(_:)"
+            startingLineNumber = "386"
+            endingLineNumber = "386"
+            landmarkName = "availableDuration()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -58,12 +58,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "530789644.949549"
+            timestampString = "530790882.20931"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "222"
             endingLineNumber = "222"
-            landmarkName = "moviePlayDidEnd(noti:)"
+            landmarkName = "setUpSuperView(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerControllerView.swift"
-            timestampString = "530789644.949604"
+            timestampString = "530790882.209523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
+            startingLineNumber = "531"
+            endingLineNumber = "531"
             landmarkName = "hideControlView()"
             landmarkType = "7">
          </BreakpointContent>

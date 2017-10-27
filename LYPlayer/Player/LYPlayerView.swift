@@ -18,12 +18,23 @@ class LYPlayerView: UIView {
         case LYPlayerStateStopped    // 停止播放
         case LYPlayerStatePause       // 暂停播放
     }
+    /**
+     *  单例，用于列表cell上多个视频
+     */
+    static let shared = LYPlayerView()
+    private override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-    
-    //MARK: - 可外部调用属性
+    //MARK: 可外部调用属性
     var isPauseByUser = false//当前状态是否被用户暂停
     var isAutoPlay = true//是否自动播放
     var mute = false//是否静音
+    var player : AVPlayer?//播放器
+    
     //是否因切换页面而导致不在当前显示页面
     var playerPushedOrPresented = false{
         didSet{
@@ -65,22 +76,17 @@ class LYPlayerView: UIView {
     }
     
     
-    /**
-     *  单例，用于列表cell上多个视频
-     */
-    static let shared = LYPlayerView()
-    private override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
 
     
+    //MARK: 内部调用属性
     fileprivate var seekTime : NSInteger = 0
-    
+    fileprivate var playerLayer : AVPlayerLayer?//播放层
+    fileprivate var urlAsset : AVURLAsset?//用于播放网络音视频资源
+    fileprivate var videoGravity = AVLayerVideoGravity.resizeAspect//视频填充模式
+    fileprivate var controlView : LYPlayerControllerView?//视频控制器view
     fileprivate var videoUrl : String!//视频地址
-    var player : AVPlayer?//播放器
+    fileprivate var isLocked = false//被锁定时不可改变进度和状态等，只能播放
     //视频播放信息
     fileprivate var __playerItem : AVPlayerItem?
     fileprivate var playerItem : AVPlayerItem?{
@@ -111,10 +117,7 @@ class LYPlayerView: UIView {
             return __playerItem
         }
     }
-    fileprivate var playerLayer : AVPlayerLayer?//播放层
-    fileprivate var urlAsset : AVURLAsset?//用于播放网络音视频资源
-    fileprivate var videoGravity = AVLayerVideoGravity.resizeAspect//视频填充模式
-    fileprivate var controlView : LYPlayerControllerView?//视频控制器view
+    
     //视频信息
     fileprivate var playerModel = LYPlayerModel(){
         didSet{
@@ -132,26 +135,14 @@ class LYPlayerView: UIView {
             self.playerItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
             self.playerItem = nil
         }
-        
         // 移除通知
         NotificationCenter.default.removeObserver(self)
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
     }
     
-    
     override func layoutSubviews() {
         super.layoutSubviews()
-
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 
 //MARK: - 外部调用方法
@@ -227,6 +218,7 @@ extension LYPlayerView{
         //保证播放组件不为空
         self.configLYPlayer()
         self.controlView = LYPlayerControllerView()
+        self.controlView?.delegate = self
         //添加view和layer
         self.frame = superView.bounds
         self.controlView?.frame = self.bounds
@@ -245,9 +237,47 @@ extension LYPlayerView{
 
 
 //MARK: - 播放进度以及播放状态
-extension LYPlayerView : UIGestureRecognizerDelegate{
+extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDelegate{
+
+    //MARK: 控制层代理方法
+    func ly_playerControllerViewLock(_ isLock: Bool) {
+        self.isLocked = isLock
+    }
     
-    //MARK: 创建手势
+    func ly_playerControllerViewPlay() {
+        self.state = .LYPlayerStatePlaying
+    }
+    
+    func ly_playerControllerViewPause() {
+        self.state = .LYPlayerStatePause
+    }
+    
+    func ly_playerControllerViewRepeat() {
+        self.playerControlView(self.superview!, self.playerModel)
+    }
+    
+    func ly_playerControllerViewFullScreen(_ isFull: Bool) {
+        print("FullScreen")
+    }
+
+    func ly_playerControllerViewDownload() {
+        print("Download")
+    }
+    
+    func ly_playerControllerViewResolution() {
+        print("Resolution")
+    }
+    
+    func ly_playerControllerViewBack() {
+        self.stopPlay()
+    }
+    
+    func ly_playerControllerViewClose() {
+        self.stopPlay()
+    }
+    
+    
+    //MARK: 手势
     func createGesture() {
         //单击
         let singleTap = UITapGestureRecognizer.init(target: self, action: #selector(LYPlayerView.singleTapAction))
@@ -349,6 +379,8 @@ extension LYPlayerView : UIGestureRecognizerDelegate{
     
     //手势操作，控制音量、亮度、快进快退
     @objc func panDirection(_ pan:UIPanGestureRecognizer) {
+        if self.isLocked{ return }
+        
         
     }
     
