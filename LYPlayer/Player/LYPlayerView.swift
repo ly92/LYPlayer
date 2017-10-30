@@ -17,6 +17,7 @@ enum LYPlayerState {
     case LYPlayerStatePlaying    // 播放中
     case LYPlayerStateStopped    // 停止播放
     case LYPlayerStatePause       // 暂停播放
+    case LYPlayerStateEnd       //播放结束
 }
 
 class LYPlayerView: UIView {
@@ -85,6 +86,8 @@ class LYPlayerView: UIView {
                 
             }else if state == .LYPlayerStatePause{
                 self.player?.pause()
+                
+            }else if state == .LYPlayerStateEnd{
                 
             }
          }
@@ -228,6 +231,7 @@ extension LYPlayerView{
     //视频播放结束的通知
     @objc private func moviePlayDidEnd(noti:NotificationCenter) {
         print(noti)
+        self.state = .LYPlayerStateEnd
     }
     
     //设置player的控制层view和superview
@@ -235,6 +239,7 @@ extension LYPlayerView{
         //保证播放组件不为空
         self.configLYPlayer()
         self.controlView = LYPlayerControllerView()
+        self.controlView?.playerModel = self.playerModel
         self.controlView?.delegate = self
         //添加view和layer
         self.frame = superView.bounds

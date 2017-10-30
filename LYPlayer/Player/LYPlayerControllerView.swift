@@ -30,24 +30,43 @@ class LYPlayerControllerView: UIView {
     //播放器的几种状态
     var state : LYPlayerState = .LYPlayerStateBuffering{
         didSet{
+            self.repeatBtn.isHidden = true
+            self.failBtn.isHidden = true
+            self.playBtn.isHidden = true
+            self.startBtn.isSelected = false
+            self.placeholderImageView.isHidden = true
+            
             if state == .LYPlayerStatePlaying{
                 self.startBtn.isSelected = true
-                
-                
+
             }else if state == .LYPlayerStateBuffering{
                 self.startBtn.isSelected = true
+
             }else if state == .LYPlayerStateFailed{
-                self.startBtn.isSelected = false
+                self.placeholderImageView.isHidden = false
+                self.failBtn.isHidden = false
+
             }else if state == .LYPlayerStateStopped{
-                self.startBtn.isSelected = false
+                self.repeatBtn.isHidden = false
                 
             }else if state == .LYPlayerStatePause{
-               self.startBtn.isSelected = false
+                self.playBtn.isHidden = false
+                
+            }else if state == .LYPlayerStateEnd{
+                self.repeatBtn.isHidden = false
                 
             }
         }
     }
     
+    
+    //视频信息
+    var playerModel = LYPlayerModel(){
+        didSet{
+            self.titleLabel.text = playerModel.title
+            self.placeholderImageView.image = playerModel.placeholderImage
+        }
+    }
     
     /** 标题 */
     fileprivate var titleLabel = UILabel()
@@ -88,7 +107,7 @@ class LYPlayerControllerView: UIView {
     /** 分辨率的View */
     fileprivate var resolutionView = UIView()
     /** 播放按钮 */
-    fileprivate var playeBtn = UIButton()
+    fileprivate var playBtn = UIButton()
     /** 加载失败按钮 */
     fileprivate var failBtn = UIButton()
     /** 快进快退View*/
@@ -168,7 +187,7 @@ class LYPlayerControllerView: UIView {
         self.addSubview(self.lockBtn)
         //        self.addSubview(self.)
         self.addSubview(self.repeatBtn)
-        self.addSubview(self.playeBtn)
+        self.addSubview(self.playBtn)
         self.addSubview(failBtn)
         self.addSubview(self.closeBtn)
         self.addSubview(self.bottomProgressView)
@@ -185,6 +204,9 @@ class LYPlayerControllerView: UIView {
         self.downLoadBtn.isHidden = true
         self.resolutionBtn.isHidden = true
         self.closeBtn.isHidden = true
+        self.repeatBtn.isHidden = true
+        self.fastView.isHidden = true
+        
         // 初始化时重置controlView
         self.playerResetControlView()
         
@@ -318,7 +340,7 @@ extension LYPlayerControllerView{
             make.center.equalTo(self)
         }
         
-        self.playeBtn.snp.makeConstraints { (make) in
+        self.playBtn.snp.makeConstraints { (make) in
             make.center.equalTo(self)
             make.width.height.equalTo(50)
         }
@@ -396,17 +418,20 @@ extension LYPlayerControllerView{
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_lock_nor"), for: .selected)
         self.repeatBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_repeat_video"), for: .normal)
-        self.failBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_"), for: .normal)
+        self.failBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_repeat_video"), for: .normal)
         self.closeBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_close"), for: .normal)
+        self.playBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play_btn"), for: .normal)
         
         
         self.lockBtn.addTarget(self, action: #selector(LYPlayerControllerView.lockBtnAction), for: .touchUpInside)
         self.closeBtn.addTarget(self, action: #selector(LYPlayerControllerView.closeBtnAction), for: .touchUpInside)
         self.fullScreenBtn.addTarget(self, action: #selector(LYPlayerControllerView.fullScreenBtnAction), for: .touchUpInside)
         self.startBtn.addTarget(self, action: #selector(LYPlayerControllerView.playBtnAction), for: .touchUpInside)
+        self.playBtn.addTarget(self, action: #selector(LYPlayerControllerView.playBtnAction), for: .touchUpInside)
         self.resolutionBtn.addTarget(self, action: #selector(LYPlayerControllerView.resolutionBtnAction), for: .touchUpInside)
         
         self.repeatBtn.addTarget(self, action: #selector(LYPlayerControllerView.repeatBtnAction), for: .touchUpInside)
+        self.failBtn.addTarget(self, action: #selector(LYPlayerControllerView.repeatBtnAction), for: .touchUpInside)
         self.downLoadBtn.addTarget(self, action: #selector(LYPlayerControllerView.downloadBtnAction), for: .touchUpInside)
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
         
