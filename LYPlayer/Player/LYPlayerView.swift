@@ -10,14 +10,17 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
+
+enum LYPlayerState {
+    case LYPlayerStateFailed     // 播放失败
+    case LYPlayerStateBuffering  // 缓冲中
+    case LYPlayerStatePlaying    // 播放中
+    case LYPlayerStateStopped    // 停止播放
+    case LYPlayerStatePause       // 暂停播放
+}
+
 class LYPlayerView: UIView {
-    enum LYPlayerState {
-        case LYPlayerStateFailed     // 播放失败
-        case LYPlayerStateBuffering  // 缓冲中
-        case LYPlayerStatePlaying    // 播放中
-        case LYPlayerStateStopped    // 停止播放
-        case LYPlayerStatePause       // 暂停播放
-    }
+    
     /**
      *  单例，用于列表cell上多个视频
      */
@@ -52,7 +55,19 @@ class LYPlayerView: UIView {
     //播放器的几种状态
     var state : LYPlayerState = .LYPlayerStateBuffering{
         didSet{
-            if state == .LYPlayerStatePlaying || state == .LYPlayerStateBuffering{
+            self.controlView?.state = self.state
+            if state == .LYPlayerStatePlaying{
+                if self.isPauseByUser{
+                    //如果用户暂停了播放
+                    self.state = .LYPlayerStatePause
+                    
+                }else{
+                    //可播放状态时如果是自动播放，则直接播放
+                    if self.isAutoPlay{
+                        self.player?.play()
+                    }
+                }
+            }else if state == .LYPlayerStateBuffering{
                 if self.isPauseByUser{
                     //如果用户暂停了播放
                     

@@ -27,7 +27,26 @@ class LYPlayerControllerView: UIView {
     
    
     var delegate : LYPlayerControllerViewDelegate?
-    
+    //播放器的几种状态
+    var state : LYPlayerState = .LYPlayerStateBuffering{
+        didSet{
+            if state == .LYPlayerStatePlaying{
+                self.startBtn.isSelected = true
+                
+                
+            }else if state == .LYPlayerStateBuffering{
+                self.startBtn.isSelected = true
+            }else if state == .LYPlayerStateFailed{
+                self.startBtn.isSelected = false
+            }else if state == .LYPlayerStateStopped{
+                self.startBtn.isSelected = false
+                
+            }else if state == .LYPlayerStatePause{
+               self.startBtn.isSelected = false
+                
+            }
+        }
+    }
     
     
     /** 标题 */
