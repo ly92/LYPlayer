@@ -42,13 +42,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerControllerView.swift"
-            timestampString = "531048002.228581"
+            timestampString = "531050641.544965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "587"
+            endingLineNumber = "587"
+            landmarkName = "LYPlayerControllerView"
+            landmarkType = "21">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

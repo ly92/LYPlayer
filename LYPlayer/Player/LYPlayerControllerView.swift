@@ -59,6 +59,13 @@ class LYPlayerControllerView: UIView {
         }
     }
     
+    //是否拖拽控制播放进度中
+    var isDraging = false{
+        didSet{
+            self.fastView.isHidden = !isDraging
+        }
+    }
+    
     
     //视频信息
     var playerModel = LYPlayerModel(){
@@ -366,7 +373,7 @@ extension LYPlayerControllerView{
         }
         
         self.fastTimeLabel.snp.makeConstraints { (make) in
-            make.leading.width.trailing.equalTo(0)
+            make.leading.trailing.equalTo(0)
             make.top.equalTo(self.fastImageView.snp.bottom).offset(2)
         }
         
@@ -421,6 +428,11 @@ extension LYPlayerControllerView{
         self.failBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_repeat_video"), for: .normal)
         self.closeBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_close"), for: .normal)
         self.playBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play_btn"), for: .normal)
+        
+        self.fastView.backgroundColor = UIColor.red
+        self.fastTimeLabel.textColor = UIColor.white
+        self.fastTimeLabel.font = UIFont.systemFont(ofSize: 14.0)
+        self.fastTimeLabel.textAlignment = .center
         
         
         self.lockBtn.addTarget(self, action: #selector(LYPlayerControllerView.lockBtnAction), for: .touchUpInside)
@@ -575,7 +587,6 @@ extension LYPlayerControllerView{
 extension LYPlayerControllerView{
     //设置隐藏
     func hideControlView() {
-
         if !self.isShow || self.isOperationing{
             return//已隐藏
         }
@@ -585,7 +596,6 @@ extension LYPlayerControllerView{
             self.bottomView.alpha = 0
             self.lockBtn.alpha = 0
         }
-        
     }
     
     //显示按钮
@@ -605,6 +615,17 @@ extension LYPlayerControllerView{
         //3秒后自动隐藏
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
             self.hideControlView()
+        }
+    }
+    
+    //进度控制view,type=true快进，false后退
+    func changeDragSections(dragSec : CGFloat, type : Bool) {
+        
+        self.fastTimeLabel.text = "\(dragSec)"
+        if type{
+            self.fastImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_fast_forward")
+        }else{
+            self.fastImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_fast_backward")
         }
     }
     

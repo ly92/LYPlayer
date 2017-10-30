@@ -113,7 +113,12 @@ class LYPlayerView: UIView {
     fileprivate var sumTime : CGFloat = 0//每次快进或着后退的时长
     fileprivate var panDirection : LYPanDirection = .LYPanDirectionHorizontal//手势方向
     fileprivate var isVolume = true//true表示调声音，false表示调亮度
-    
+    //是否拖拽中
+    fileprivate var isDraging = false{
+        didSet{
+            self.controlView?.isDraging = isDraging
+        }
+    }
     //视频播放信息
     fileprivate var __playerItem : AVPlayerItem?
     fileprivate var playerItem : AVPlayerItem?{
@@ -374,6 +379,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                     return
                 }
                 self.sumTime = CGFloat(cmTime.value) / CGFloat(cmTime.timescale)
+                self.isDraging = true
             }else if abs(velocity.x) < abs(velocity.y){
                 //垂直方向
                 self.panDirection = .LYPanDirectionVertical
@@ -385,6 +391,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                     self.isVolume = true
                 }
             }
+            
         case .changed:
             if self.panDirection == .LYPanDirectionVertical{
                 self.verticalMoved(value: velocity.y)
@@ -398,6 +405,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                 self.isPauseByUser = false
                 self.seekToTime(dragedSeconds: self.sumTime, completionHandler: nil)
                 self.sumTime = 0
+                self.isDraging = false
             }else{
                 
             }
@@ -426,6 +434,11 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         }else if self.sumTime < 0{
             self.sumTime = 0
         }
+        if value > 0{
+            self.controlView?.changeDragSections(dragSec: self.sumTime, type: true)
+        }else if value < 0{
+            self.controlView?.changeDragSections(dragSec: self.sumTime, type: false)
+        }
         
         
         
@@ -445,7 +458,6 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                 }
                 self.player?.play()
             })
-            
         }
     }
     
