@@ -21,7 +21,6 @@ enum LYPlayerState {
 }
 
 class LYPlayerView: UIView {
-    
     /**
      *  单例，用于列表cell上多个视频
      */
@@ -31,6 +30,12 @@ class LYPlayerView: UIView {
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - 枚举
+    enum LYPanDirection {
+        case LYPanDirectionHorizontal//水平移动
+        case LYPanDirectionVertical//垂直移动
     }
     
     //MARK: 可外部调用属性
@@ -98,13 +103,17 @@ class LYPlayerView: UIView {
 
     
     //MARK: 内部调用属性
-    fileprivate var seekTime : NSInteger = 0
+    fileprivate var seekTime : NSInteger = 0//当前已播放时间
     fileprivate var playerLayer : AVPlayerLayer?//播放层
     fileprivate var urlAsset : AVURLAsset?//用于播放网络音视频资源
     fileprivate var videoGravity = AVLayerVideoGravity.resizeAspect//视频填充模式
     fileprivate var controlView : LYPlayerControllerView?//视频控制器view
     fileprivate var videoUrl : String!//视频地址
     fileprivate var isLocked = false//被锁定时不可改变进度和状态等，只能播放
+    fileprivate var sumTime : CGFloat = 0//每次快进或着后退的时长
+    fileprivate var panDirection : LYPanDirection = .LYPanDirectionHorizontal//手势方向
+    fileprivate var isVolume = true//true表示调声音，false表示调亮度
+    
     //视频播放信息
     fileprivate var __playerItem : AVPlayerItem?
     fileprivate var playerItem : AVPlayerItem?{
@@ -299,7 +308,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     
     
-    //MARK: 手势
+    //MARK: 单击双击手势
     func createGesture() {
         //单击
         let singleTap = UITapGestureRecognizer.init(target: self, action: #selector(LYPlayerView.singleTapAction))
@@ -348,6 +357,99 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
 //        }
 //    }
     
+    
+    
+    
+    //MARK: 手势操作，控制音量、亮度、快进快退
+    @objc func panDirection(_ pan:UIPanGestureRecognizer) {
+        if self.isLocked{ return }
+        let velocity = pan.velocity(in: self)//移动速度
+        let location = pan.location(in: self)//开始位置
+        switch pan.state {
+        case .began:
+            if abs(velocity.x) > abs(velocity.y){
+                //水平方向
+                self.panDirection = .LYPanDirectionHorizontal
+                guard let cmTime = self.playerItem?.currentTime() else{
+                    return
+                }
+                self.sumTime = CGFloat(cmTime.value) / CGFloat(cmTime.timescale)
+            }else if abs(velocity.x) < abs(velocity.y){
+                //垂直方向
+                self.panDirection = .LYPanDirectionVertical
+                if location.x < self.frame.size.width / 2.0{
+                    //调亮度
+                    self.isVolume = false
+                }else{
+                    //调声音
+                    self.isVolume = true
+                }
+            }
+        case .changed:
+            if self.panDirection == .LYPanDirectionVertical{
+                self.verticalMoved(value: velocity.y)
+            }else{
+                self.horizontalMoved(value: velocity.x)
+            }
+        case .ended:
+            // 移动结束也需要判断垂直或者平移
+            // 比如水平移动结束时，要快进到指定位置，如果这里没有判断，当我们调节音量完之后，会出现屏幕跳动的bug
+            if self.panDirection == .LYPanDirectionHorizontal{
+                self.isPauseByUser = false
+                self.seekToTime(dragedSeconds: self.sumTime, completionHandler: nil)
+                self.sumTime = 0
+            }else{
+                
+            }
+            
+
+        default:
+            print(pan.state)
+        }
+    }
+    
+    //音量，亮度
+    func verticalMoved(value : CGFloat) {
+        
+    }
+    //播放进度
+    func horizontalMoved(value : CGFloat) {
+        // 每次滑动需要叠加时间
+        self.sumTime = self.sumTime + value / 200
+        // 需要限定sumTime的范围
+        guard let durationTime = self.playerItem?.duration else {
+            return
+        }
+        let totalTime = CGFloat(durationTime.value) / CGFloat(durationTime.timescale)
+        if self.sumTime > totalTime {
+            self.sumTime = totalTime
+        }else if self.sumTime < 0{
+            self.sumTime = 0
+        }
+        
+        
+        
+    }
+    //从xx秒开始播放视频跳转，dragedSeconds视频跳转的秒数
+    func seekToTime(dragedSeconds : CGFloat, completionHandler finished : ((Bool) -> Void)?) {
+        if self.state == .LYPlayerStatePlaying && self.player?.currentItem?.status == .readyToPlay{
+            // seekTime:completionHandler:不能精确定位
+            // 如果需要精确定位，可以使用seekToTime:toleranceBefore:toleranceAfter:completionHandler:
+            // 转换成CMTime才能给player来控制播放进度
+            self.player?.pause()
+            let dragedCMTime = CMTime.init(value: CMTimeValue(dragedSeconds), timescale: 1)
+            self.player?.seek(to: dragedCMTime, toleranceBefore: CMTime.init(value: 1, timescale: 1), toleranceAfter: CMTime.init(value: 1, timescale: 1), completionHandler: { (finish) in
+                // 视频跳转回调
+                if finished != nil{
+                    finished!(finish)
+                }
+                self.player?.play()
+            })
+            
+        }
+    }
+    
+    
     //MARK: 观察playeritem的可播放状态
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         //空对象时不做处理
@@ -372,17 +474,17 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                         pan.cancelsTouchesInView = true
                         self.addGestureRecognizer(pan)
                         
-//                        if self.seekTime{
-//                            self
-//                        }
+                        //                        if self.seekTime{
+                        //                            self
+                        //                        }
                         self.player?.isMuted = self.mute
                     }else if self.player?.currentItem?.status == .failed{
                         self.state = .LYPlayerStateFailed
                     }
                 }else if keyPath! == "loadedTimeRanges"{
                     // 计算缓冲进度
-//                    let timeInterval = self.availableDuration()
-//                    let duration = self.playerItem?.duration.seconds
+                    //                    let timeInterval = self.availableDuration()
+                    //                    let duration = self.playerItem?.duration.seconds
                     
                 }else if keyPath! == "playback BufferEmpty"{
                     // 当缓冲是空的时候
@@ -398,14 +500,6 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
             print("default")
         }
     }
-    
-    //手势操作，控制音量、亮度、快进快退
-    @objc func panDirection(_ pan:UIPanGestureRecognizer) {
-        if self.isLocked{ return }
-        
-        
-    }
-    
     
     
     //MARK: 当前已缓冲的进度
