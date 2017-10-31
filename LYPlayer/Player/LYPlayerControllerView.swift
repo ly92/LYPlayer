@@ -412,10 +412,8 @@ extension LYPlayerControllerView{
         
         self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play"), for: .normal)
         self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_pause"), for: .selected)
-        self.currentTimeLabel.text = "0:00"
         self.currentTimeLabel.textColor = UIColor.white
         self.currentTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
-        self.totalTimeLabel.text = "10:24"
         self.totalTimeLabel.textColor = UIColor.white
         self.totalTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
         self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_fullscreen"), for: .normal)
@@ -429,10 +427,15 @@ extension LYPlayerControllerView{
         self.closeBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_close"), for: .normal)
         self.playBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play_btn"), for: .normal)
         
-        self.fastView.backgroundColor = UIColor.red
+        self.fastView.backgroundColor = UIColor.black
+        self.fastView.clipsToBounds = true
+        self.fastView.layer.cornerRadius = 5
+        self.fastView.alpha = 0.8
         self.fastTimeLabel.textColor = UIColor.white
         self.fastTimeLabel.font = UIFont.systemFont(ofSize: 14.0)
         self.fastTimeLabel.textAlignment = .center
+        self.fastProgressView.progressTintColor = UIColor.white
+        self.fastProgressView.trackTintColor = UIColor.gray
         
         
         self.lockBtn.addTarget(self, action: #selector(LYPlayerControllerView.lockBtnAction), for: .touchUpInside)
@@ -530,16 +533,22 @@ extension LYPlayerControllerView{
     //左下角的播放按钮事件
     @objc func playBtnAction() {
         self.isOperationing = true
-        self.startBtn.isSelected = !self.startBtn.isSelected
-        if self.startBtn.isSelected{
-            if self.delegate != nil{
-                self.delegate?.ly_playerControllerViewPlay()
-            }
+        if self.state == .LYPlayerStateEnd{
+            //重播
+            self.repeatBtnAction()
         }else{
-            if self.delegate != nil{
-                self.delegate?.ly_playerControllerViewPause()
+            self.startBtn.isSelected = !self.startBtn.isSelected
+            if self.startBtn.isSelected{
+                if self.delegate != nil{
+                    self.delegate?.ly_playerControllerViewPlay()
+                }
+            }else{
+                if self.delegate != nil{
+                    self.delegate?.ly_playerControllerViewPause()
+                }
             }
         }
+        
     }
     //右下角的全屏按钮事件
     @objc func fullScreenBtnAction() {
@@ -619,14 +628,28 @@ extension LYPlayerControllerView{
     }
     
     //进度控制view,type=true快进，false后退
-    func changeDragSections(dragSec : CGFloat, type : Bool) {
-        
-        self.fastTimeLabel.text = "\(dragSec)"
+    func changeDragSections(dragSec : CGFloat, totalTime : CGFloat, type : Bool) {
+        self.fastTimeLabel.text = self.transferSecToMin(second: NSInteger(dragSec)) + "/" + self.transferSecToMin(second: NSInteger(totalTime))
         if type{
             self.fastImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_fast_forward")
         }else{
             self.fastImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_fast_backward")
         }
+        self.fastProgressView.progress = Float(dragSec/totalTime)
+    }
+
+    // 添加播放进度
+    func setPlayerSchedule(value:CGFloat, totalTime:CGFloat) {
+        let current = value * totalTime
+        self.currentTimeLabel.text = self.transferSecToMin(second: NSInteger(current))
+        self.totalTimeLabel.text = self.transferSecToMin(second: NSInteger(totalTime))
+    }
+    //秒转分
+    func transferSecToMin(second:NSInteger) -> String {
+        let min = second / 60
+        let sec = second % 60
+        let str = "\(min):\(sec)"
+        return str
     }
     
     

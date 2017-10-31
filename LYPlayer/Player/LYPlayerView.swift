@@ -11,6 +11,7 @@ import AVFoundation
 import MediaPlayer
 
 
+
 enum LYPlayerState {
     case LYPlayerStateFailed     // 播放失败
     case LYPlayerStateBuffering  // 缓冲中
@@ -113,6 +114,8 @@ class LYPlayerView: UIView {
     fileprivate var sumTime : CGFloat = 0//每次快进或着后退的时长
     fileprivate var panDirection : LYPanDirection = .LYPanDirectionHorizontal//手势方向
     fileprivate var isVolume = true//true表示调声音，false表示调亮度
+    fileprivate var volumeViewSlider : UISlider?//声音
+    fileprivate var timeObserver : Any?//检测播放进度
     //是否拖拽中
     fileprivate var isDraging = false{
         didSet{
@@ -224,6 +227,14 @@ extension LYPlayerView{
         // 初始化playerLayer
         self.playerLayer = AVPlayerLayer.init(player: self.player!)
         self.playerLayer?.videoGravity = self.videoGravity
+        
+        // 添加播放进度计时器
+        self.createPlayerTimer()
+        // 获取系统音量
+        self.configureVolume()
+        
+        //添加通知
+        self.addNotification()
     }
 
     //清理占用内存的所有，组件和通知
@@ -235,6 +246,10 @@ extension LYPlayerView{
         self.removeFromSuperview()
         self.playerItem = nil//顺带清理观察
         self.urlAsset = nil
+        if self.timeObserver != nil{
+            self.player?.removeTimeObserver(self.timeObserver!)
+            self.timeObserver = nil
+        }
         self.player = nil
         self.playerLayer = nil
         // 移除通知
@@ -242,11 +257,22 @@ extension LYPlayerView{
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
     }
     
-    //视频播放结束的通知
-    @objc private func moviePlayDidEnd(noti:NotificationCenter) {
-        print(noti)
-        self.state = .LYPlayerStateEnd
+    // 添加播放进度计时器
+    func createPlayerTimer() {
+        self.timeObserver = self.player?.addPeriodicTimeObserver(forInterval: CMTime.init(seconds: 1, preferredTimescale: 1), queue: nil) { (time) in
+            guard let currentItem = self.player?.currentItem else{
+                return
+            }
+            let loadedRanges = currentItem.seekableTimeRanges
+            if loadedRanges.count > 0 && currentItem.duration.timescale != 0{
+                let currentTime = CGFloat(currentItem.currentTime().seconds)
+                let totalTime = CGFloat(currentItem.duration.value) / CGFloat(currentItem.duration.timescale)
+                let value = currentTime / totalTime
+                self.controlView?.setPlayerSchedule(value: value, totalTime: totalTime)
+            }
+        }
     }
+    
     
     //设置player的控制层view和superview
     private func setUpSuperView(_ superView : UIView){
@@ -261,13 +287,62 @@ extension LYPlayerView{
         self.playerLayer?.frame = self.bounds
         self.layer.addSublayer(self.playerLayer!)
         superView.addSubview(self)
+        //添加手势
         self.createGesture()
         
         //3秒后变透明
         self.addSubview(self.controlView!)
     }
     
+    //MARK: 处理通知
+    //添加通知
+    func addNotification() {
+        // app退到后台
+        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        
+        // app进入前台
+        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.appDidEnterPlayground), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+        
+        // 监听耳机插入和拔掉通知
+        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.audioRouteChangeListenerCallback(_:)), name: NSNotification.Name.AVAudioSessionRouteChange, object: nil)
+        
+        // 监测设备方向
+        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.onDeviceOrientationChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        
+        //状态条变化
+        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.onStatusBarOrientationChange), name: NSNotification.Name.UIApplicationDidChangeStatusBarOrientation, object: nil)
+        
+    }
     
+    //视频播放结束的通知
+    @objc private func moviePlayDidEnd(noti:NotificationCenter) {
+        print(noti)
+        self.state = .LYPlayerStateEnd
+    }
+    // app退到后台
+    @objc private func appDidEnterBackground() {
+        
+    }
+    
+    // app进入前台
+    @objc private func appDidEnterPlayground() {
+        
+    }
+    
+    // 监听耳机插入和拔掉通知
+    @objc func audioRouteChangeListenerCallback(_ noti : Notification) {
+        
+    }
+    
+    // 监测设备方向
+    @objc private func onDeviceOrientationChange() {
+        
+    }
+    
+    //状态条变化
+    @objc private func onStatusBarOrientationChange() {
+        
+    }
     
 }
 
@@ -418,7 +493,11 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     
     //音量，亮度
     func verticalMoved(value : CGFloat) {
-        
+        if self.isVolume && self.volumeViewSlider != nil{
+            self.volumeViewSlider?.value = self.volumeViewSlider!.value - Float(value / 10000)
+        }else{
+            UIScreen.main.brightness = UIScreen.main.brightness - value / 10000
+        }
     }
     //播放进度
     func horizontalMoved(value : CGFloat) {
@@ -435,14 +514,12 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
             self.sumTime = 0
         }
         if value > 0{
-            self.controlView?.changeDragSections(dragSec: self.sumTime, type: true)
+            self.controlView?.changeDragSections(dragSec: self.sumTime, totalTime: totalTime, type: true)
         }else if value < 0{
-            self.controlView?.changeDragSections(dragSec: self.sumTime, type: false)
+            self.controlView?.changeDragSections(dragSec: self.sumTime, totalTime: totalTime, type: false)
         }
-        
-        
-        
     }
+    
     //从xx秒开始播放视频跳转，dragedSeconds视频跳转的秒数
     func seekToTime(dragedSeconds : CGFloat, completionHandler finished : ((Bool) -> Void)?) {
         if self.state == .LYPlayerStatePlaying && self.player?.currentItem?.status == .readyToPlay{
@@ -461,6 +538,23 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         }
     }
     
+    //MARK: 获取声音
+    func configureVolume() {
+        let volumeView = MPVolumeView()
+        self.volumeViewSlider = nil
+        for view in volumeView.subviews {
+            if ((view as? UISlider) != nil){
+                self.volumeViewSlider = view as? UISlider
+            }
+        }
+        // 设置声音变大 - 播放声音的时候需要大
+        let session = AVAudioSession.sharedInstance()
+        if session.category != AVAudioSessionCategoryPlayback{
+            try! session.setCategory(AVAudioSessionCategoryPlayback)
+            try! session.setActive(true)
+        }
+    }
+    //
     
     //MARK: 观察playeritem的可播放状态
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -471,6 +565,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         case _ as AVPlayerItem:
             if keyPath != nil && change != nil && self.playerItem != nil{
                 if keyPath == "status"{
+                    
                     if self.player?.currentItem?.status == .readyToPlay{
                         self.setNeedsLayout()
                         self.layoutIfNeeded()
@@ -494,18 +589,23 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                         self.state = .LYPlayerStateFailed
                     }
                 }else if keyPath! == "loadedTimeRanges"{
+                    print("*****************")
+                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                     // 计算缓冲进度
                     //                    let timeInterval = self.availableDuration()
                     //                    let duration = self.playerItem?.duration.seconds
                     
-                }else if keyPath! == "playback BufferEmpty"{
+                }else if keyPath! == "playbackBufferEmpty"{
                     // 当缓冲是空的时候
+                    print("###############")
+                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                     if (self.playerItem?.isPlaybackBufferEmpty)!{
                         self.state = .LYPlayerStateBuffering
                     }
                 }else if keyPath! == "playbackLikelyToKeepUp"{
                     // 当缓冲好的时候
-                    
+                    print("----------------")
+                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                 }
             }
         default:
