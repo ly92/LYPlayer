@@ -20,6 +20,11 @@ class MoviePlayerViewController: UIViewController {
         print(self.url)
         
         
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.testPlay()
     }
     

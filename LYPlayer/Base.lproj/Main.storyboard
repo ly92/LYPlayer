@@ -4,7 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -42,7 +42,7 @@
                                 <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oDv-W6-3cx" id="h5J-w7-7pA">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
@@ -131,12 +131,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="k26-rP-aBI" firstAttribute="top" secondItem="hN1-I9-PQ3" secondAttribute="top" id="3KT-zh-e4P"/>
-                            <constraint firstItem="k26-rP-aBI" firstAttribute="leading" secondItem="hN1-I9-PQ3" secondAttribute="leading" id="DtL-a2-Ebp"/>
+                            <constraint firstItem="k26-rP-aBI" firstAttribute="top" secondItem="REc-5D-SRH" secondAttribute="top" constant="64" id="3KT-zh-e4P"/>
+                            <constraint firstItem="k26-rP-aBI" firstAttribute="leading" secondItem="REc-5D-SRH" secondAttribute="leading" id="DtL-a2-Ebp"/>
                             <constraint firstItem="hN1-I9-PQ3" firstAttribute="trailing" secondItem="OPj-Od-qLk" secondAttribute="trailing" constant="10" id="GPL-U5-6vP"/>
                             <constraint firstAttribute="bottom" secondItem="ehG-8j-E6d" secondAttribute="bottom" constant="10" id="O1T-O3-ZeI"/>
                             <constraint firstItem="hN1-I9-PQ3" firstAttribute="bottom" secondItem="OPj-Od-qLk" secondAttribute="bottom" constant="20" id="Zqw-4p-dMX"/>
-                            <constraint firstItem="k26-rP-aBI" firstAttribute="trailing" secondItem="hN1-I9-PQ3" secondAttribute="trailing" id="gVs-dX-xjQ"/>
+                            <constraint firstItem="k26-rP-aBI" firstAttribute="trailing" secondItem="REc-5D-SRH" secondAttribute="trailing" id="gVs-dX-xjQ"/>
                             <constraint firstItem="ehG-8j-E6d" firstAttribute="leading" secondItem="REc-5D-SRH" secondAttribute="leading" constant="10" id="ur9-5h-b4C"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hN1-I9-PQ3"/>
@@ -177,7 +177,7 @@
                                 <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IOJ-FK-gXa" id="BeQ-0m-ntA">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>

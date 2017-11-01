@@ -256,6 +256,8 @@ extension LYPlayerView{
         }
         self.player = nil
         self.playerLayer = nil
+        self.isLocked = false
+        self.volumeViewSlider = nil
         // 移除通知
         NotificationCenter.default.removeObserver(self)
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
@@ -342,7 +344,22 @@ extension LYPlayerView{
     
     // 监听耳机插入和拔掉通知
     @objc func audioRouteChangeListenerCallback(_ noti : Notification) {
-        
+        guard let value = noti.userInfo?["AVAudioSessionRouteChangeReasonKey"] else {
+            return
+        }
+        guard let type = value as? Int else {
+            return
+        }
+        if type == 1{
+            //插入
+            //自动降低声音
+            if (self.volumeViewSlider?.value)! > Float(0.4){
+                self.volumeViewSlider?.setValue(0.4, animated: true)
+            }
+        }else if type == 2{
+            //拔出
+            
+        }
     }
     
     // 监测设备方向
@@ -431,6 +448,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     //双击，播放，暂停
     @objc func doubleTapAction() {
+        if self.isLocked{ return }
         if self.state == .LYPlayerStatePlaying{
             self.state = .LYPlayerStatePause
         }else{
