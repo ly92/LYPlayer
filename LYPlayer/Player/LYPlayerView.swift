@@ -15,10 +15,11 @@ import MediaPlayer
 enum LYPlayerState {
     case LYPlayerStateFailed     // 播放失败
     case LYPlayerStateBuffering  // 缓冲中
+    case LYPlayerStateReadyPlay  //准备播放
     case LYPlayerStatePlaying    // 播放中
-    case LYPlayerStateStopped    // 停止播放
     case LYPlayerStatePause       // 暂停播放
-    case LYPlayerStateEnd       //播放结束
+    case LYPlayerStateStopped    // 停止播放，用户取消播放
+    case LYPlayerStateEnd       //播放结束，自然结束
 }
 
 class LYPlayerView: UIView {
@@ -40,7 +41,12 @@ class LYPlayerView: UIView {
     }
     
     //MARK: 可外部调用属性
-    var isPauseByUser = false//当前状态是否被用户暂停
+    //当前状态是否被用户暂停
+    var isPauseByUser = false{
+        didSet{
+//            self.state = isPauseByUser ? .LYPlayerStatePause : .LYPlayerStatePlaying
+        }
+    }
     var isAutoPlay = true//是否自动播放
     var mute = false//是否静音
     var player : AVPlayer?//播放器
@@ -62,28 +68,22 @@ class LYPlayerView: UIView {
     //播放器的几种状态
     var state : LYPlayerState = .LYPlayerStateBuffering{
         didSet{
+            //设置控制层的状态
             self.controlView?.state = self.state
             if state == .LYPlayerStatePlaying{
-                if self.isPauseByUser{
-                    //如果用户暂停了播放
-                    self.state = .LYPlayerStatePause
-                    
-                }else{
-                    //可播放状态时如果是自动播放，则直接播放
-                    if self.isAutoPlay{
-                        self.player?.play()
-                    }
+                //取消用户的暂停
+                self.isPauseByUser = false
+                //开始播放
+                self.player?.play()
+            }else if state == .LYPlayerStateReadyPlay{
+                //准备播放
+                //可播放状态时如果是自动播放，则直接播放
+                if self.isAutoPlay{
+                    self.setState(.LYPlayerStatePlaying)
                 }
+                
             }else if state == .LYPlayerStateBuffering{
-                if self.isPauseByUser{
-                    //如果用户暂停了播放
-                    
-                }else{
-                    //可播放状态时如果是自动播放，则直接播放
-                    if self.isAutoPlay{
-                        self.player?.play()
-                    }
-                }
+
             }else if state == .LYPlayerStateFailed{
                 
             }else if state == .LYPlayerStateStopped{
@@ -97,6 +97,10 @@ class LYPlayerView: UIView {
                 
             }
          }
+    }
+    
+    func setState(_ state : LYPlayerState) {
+        self.state = state
     }
     
     
@@ -321,12 +325,19 @@ extension LYPlayerView{
     }
     // app退到后台
     @objc private func appDidEnterBackground() {
+        if self.state == .LYPlayerStatePlaying{
+            self.doubleTapAction()
+        }else{
+            self.isPauseByUser = true
+        }
         
     }
     
     // app进入前台
     @objc private func appDidEnterPlayground() {
-        
+        if !self.isPauseByUser{
+            self.doubleTapAction()
+        }
     }
     
     // 监听耳机插入和拔掉通知
@@ -569,7 +580,11 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                     if self.player?.currentItem?.status == .readyToPlay{
                         self.setNeedsLayout()
                         self.layoutIfNeeded()
-                        self.state = .LYPlayerStatePlaying
+//                        if self.isAutoPlay{
+//                            self.state = .LYPlayerStatePlaying
+//                        }else{
+                            self.state = .LYPlayerStateReadyPlay
+//                        }
                         
                         // 加载完成后，再添加平移手势
                         // 添加平移手势，用来控制音量、亮度、快进快退

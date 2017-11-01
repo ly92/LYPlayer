@@ -39,6 +39,9 @@ class LYPlayerControllerView: UIView {
             if state == .LYPlayerStatePlaying{
                 self.startBtn.isSelected = true
 
+            }else if state == .LYPlayerStateReadyPlay{
+                //准备播放
+                self.playBtn.isHidden = false
             }else if state == .LYPlayerStateBuffering{
                 self.startBtn.isSelected = true
 
@@ -213,6 +216,7 @@ class LYPlayerControllerView: UIView {
         self.closeBtn.isHidden = true
         self.repeatBtn.isHidden = true
         self.fastView.isHidden = true
+        self.failBtn.isHidden = true
         
         // 初始化时重置controlView
         self.playerResetControlView()
@@ -414,8 +418,10 @@ extension LYPlayerControllerView{
         self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_pause"), for: .selected)
         self.currentTimeLabel.textColor = UIColor.white
         self.currentTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
+        self.currentTimeLabel.textAlignment = .right
         self.totalTimeLabel.textColor = UIColor.white
         self.totalTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
+        self.totalTimeLabel.textAlignment = .left
         self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_fullscreen"), for: .normal)
         self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_shrinkscreen"), for: .selected)
         self.bottomImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_bottom_shadow")
