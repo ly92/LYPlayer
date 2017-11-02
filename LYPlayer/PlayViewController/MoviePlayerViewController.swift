@@ -19,13 +19,20 @@ class MoviePlayerViewController: UIViewController {
 
         print(self.url)
         
-        
+        self.testPlay()
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.testPlay()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if LYPlayerView.shared.isPauseByUser{
+            LYPlayerView.shared.play()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        LYPlayerView.shared.pause()
     }
     
     func testPlay() {

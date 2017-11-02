@@ -208,7 +208,7 @@ extension LYPlayerView{
     }
     //开始播放
     func play() {
-        if self.state != .LYPlayerStatePlaying{
+        if self.state != .LYPlayerStatePlaying && self.state != .LYPlayerStateFailed{
             self.state = .LYPlayerStatePlaying
         }
         self.isPauseByUser = false
@@ -551,7 +551,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     
     //从xx秒开始播放视频跳转，dragedSeconds视频跳转的秒数
     func seekToTime(dragedSeconds : CGFloat, completionHandler finished : ((Bool) -> Void)?) {
-        if self.state == .LYPlayerStatePlaying && self.player?.currentItem?.status == .readyToPlay{
+        if (self.state == .LYPlayerStatePlaying || self.state == .LYPlayerStatePause) && self.player?.currentItem?.status == .readyToPlay{
             // seekTime:completionHandler:不能精确定位
             // 如果需要精确定位，可以使用seekToTime:toleranceBefore:toleranceAfter:completionHandler:
             // 转换成CMTime才能给player来控制播放进度
@@ -562,7 +562,9 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                 if finished != nil{
                     finished!(finish)
                 }
-                self.player?.play()
+                if self.state == .LYPlayerStatePlaying{
+                    self.player?.play()
+                }
             })
         }
     }
@@ -598,11 +600,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                     if self.player?.currentItem?.status == .readyToPlay{
                         self.setNeedsLayout()
                         self.layoutIfNeeded()
-//                        if self.isAutoPlay{
-//                            self.state = .LYPlayerStatePlaying
-//                        }else{
-                            self.state = .LYPlayerStateReadyPlay
-//                        }
+                        self.state = .LYPlayerStateReadyPlay
                         
                         // 加载完成后，再添加平移手势
                         // 添加平移手势，用来控制音量、亮度、快进快退
@@ -622,23 +620,25 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                         self.state = .LYPlayerStateFailed
                     }
                 }else if keyPath! == "loadedTimeRanges"{
-                    print("*****************")
-                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                     // 计算缓冲进度
-                    //                    let timeInterval = self.availableDuration()
-                    //                    let duration = self.playerItem?.duration.seconds
-                    
+                    let timeInterval = self.availableDuration()
+                    guard let duration = self.playerItem?.duration.seconds else{
+                        return
+                    }
+                    let value = Float(timeInterval / duration)
+                    self.controlView?.setUpBufferProgressValue(value)
                 }else if keyPath! == "playbackBufferEmpty"{
                     // 当缓冲是空的时候
-                    print("###############")
-                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
+//                    print("###############")
+//                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                     if (self.playerItem?.isPlaybackBufferEmpty)!{
                         self.state = .LYPlayerStateBuffering
                     }
                 }else if keyPath! == "playbackLikelyToKeepUp"{
                     // 当缓冲好的时候
-                    print("----------------")
-                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
+                    if self.playerItem!.isPlaybackLikelyToKeepUp && self.state != .LYPlayerStatePlaying && self.state != .LYPlayerStatePause{
+                        self.state = .LYPlayerStatePlaying
+                    }
                 }
             }
         default:

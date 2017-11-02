@@ -35,7 +35,11 @@ class LYPlayerControllerView: UIView {
             self.playBtn.isHidden = true
             self.startBtn.isSelected = false
             self.placeholderImageView.isHidden = true
-            
+            self.activityView.isHidden = true
+            if self.activity.isAnimating && state != .LYPlayerStateBuffering{
+                self.activity.stopAnimating()
+            }
+
             if state == .LYPlayerStatePlaying{
                 self.startBtn.isSelected = true
 
@@ -44,7 +48,10 @@ class LYPlayerControllerView: UIView {
                 self.playBtn.isHidden = false
             }else if state == .LYPlayerStateBuffering{
                 self.startBtn.isSelected = true
-
+                self.activityView.isHidden = false
+                if !self.activity.isAnimating{
+                    self.activity.startAnimating()
+                }
             }else if state == .LYPlayerStateFailed{
                 self.placeholderImageView.isHidden = false
                 self.failBtn.isHidden = false
@@ -95,7 +102,8 @@ class LYPlayerControllerView: UIView {
     /** 锁定屏幕方向按钮 */
     fileprivate var lockBtn = UIButton()
     /** 系统菊花 */
-    
+    fileprivate var activityView = UIView()
+    fileprivate var activity = UIActivityIndicatorView()
     /** 返回按钮*/
     fileprivate var backBtn = UIButton()
     /** 关闭按钮*/
@@ -178,6 +186,12 @@ class LYPlayerControllerView: UIView {
         self.addSubview(self.placeholderImageView)
         //        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
         
+        //系统菊花
+        self.addSubview(self.activityView)
+        self.activityView.backgroundColor = UIColor.RGBSA(s: 0, a: 0.7)
+        self.activity = UIActivityIndicatorView.init(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        self.activityView.addSubview(self.activity)
+        
         self.addSubview(self.topImageView)
         self.topView.addSubview(self.backBtn)
         self.topView.addSubview(self.titleLabel)
@@ -202,21 +216,25 @@ class LYPlayerControllerView: UIView {
         self.addSubview(self.closeBtn)
         self.addSubview(self.bottomProgressView)
         
-        
+        //进度展示
         self.fastView.addSubview(self.fastImageView)
         self.fastView.addSubview(self.fastTimeLabel)
         self.fastView.addSubview(self.fastProgressView)
         self.addSubview(self.fastView)
         
         
-        self.makeSubViewsConstraints()
-        
+        //设置隐藏项
         self.downLoadBtn.isHidden = true
         self.resolutionBtn.isHidden = true
         self.closeBtn.isHidden = true
         self.repeatBtn.isHidden = true
         self.fastView.isHidden = true
         self.failBtn.isHidden = true
+        self.activityView.isHidden = true
+        
+        //设置约束
+        self.makeSubViewsConstraints()
+        
         
         // 初始化时重置controlView
         self.playerResetControlView()
@@ -349,6 +367,8 @@ extension LYPlayerControllerView{
         
         self.repeatBtn.snp.makeConstraints { (make) in
             make.center.equalTo(self)
+            make.width.equalTo(40)
+            make.height.equalTo(60)
         }
         
         self.playBtn.snp.makeConstraints { (make) in
@@ -360,8 +380,8 @@ extension LYPlayerControllerView{
         
         self.failBtn.snp.makeConstraints { (make) in
             make.center.equalTo(self)
-            make.width.equalTo(130)
-            make.height.equalTo(33)
+            make.width.equalTo(40)
+            make.height.equalTo(60)
         }
         
         self.fastView.snp.makeConstraints { (make) in
@@ -389,6 +409,14 @@ extension LYPlayerControllerView{
         
         self.bottomProgressView.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(0)
+        }
+        
+        self.activityView.snp.makeConstraints { (make) in
+            make.leading.trailing.bottom.height.equalTo(self)
+        }
+        
+        self.activity.snp.makeConstraints { (make) in
+            make.center.equalTo(self.activityView.snp.center)
         }
     }
     
@@ -425,6 +453,9 @@ extension LYPlayerControllerView{
         self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_fullscreen"), for: .normal)
         self.fullScreenBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_shrinkscreen"), for: .selected)
         self.bottomImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_bottom_shadow")
+        self.progressView.progress = 0
+        self.progressView.progressTintColor = UIColor.RGBSA(s: 255, a: 0.5)
+        self.progressView.trackTintColor = UIColor.clear
         
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_lock_nor"), for: .selected)
@@ -455,6 +486,8 @@ extension LYPlayerControllerView{
         self.failBtn.addTarget(self, action: #selector(LYPlayerControllerView.repeatBtnAction), for: .touchUpInside)
         self.downLoadBtn.addTarget(self, action: #selector(LYPlayerControllerView.downloadBtnAction), for: .touchUpInside)
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
+        
+        
         
         self.showControlView()
     }
@@ -658,6 +691,10 @@ extension LYPlayerControllerView{
         return str
     }
     
+    //当前缓冲的进度
+    func setUpBufferProgressValue(_ value : Float) {
+        self.progressView.setProgress(value, animated: false)
+    }
     
 }
 
