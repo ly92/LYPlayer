@@ -120,6 +120,7 @@ class LYPlayerView: UIView {
     fileprivate var isVolume = true//true表示调声音，false表示调亮度
     fileprivate var volumeViewSlider : UISlider?//声音
     fileprivate var timeObserver : Any?//检测播放进度
+    fileprivate var fatherView = UIView()//父级视图
     //是否拖拽中
     fileprivate var isDraging = false{
         didSet{
@@ -260,6 +261,7 @@ extension LYPlayerView{
         self.volumeViewSlider = nil
         // 移除通知
         NotificationCenter.default.removeObserver(self)
+        //结束监听屏幕旋转
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
     }
     
@@ -293,6 +295,7 @@ extension LYPlayerView{
         self.playerLayer?.frame = self.bounds
         self.layer.addSublayer(self.playerLayer!)
         superView.addSubview(self)
+        self.fatherView = superView
         //添加手势
         self.createGesture()
         
@@ -311,6 +314,9 @@ extension LYPlayerView{
         
         // 监听耳机插入和拔掉通知
         NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.audioRouteChangeListenerCallback(_:)), name: NSNotification.Name.AVAudioSessionRouteChange, object: nil)
+        
+        //开始监听屏幕旋转
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         
         // 监测设备方向
         NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.onDeviceOrientationChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
@@ -364,12 +370,25 @@ extension LYPlayerView{
     
     // 监测设备方向
     @objc private func onDeviceOrientationChange() {
-        
+        let deviceOrientation = UIDevice.current.orientation
+        if deviceOrientation.isPortrait{
+            //垂直
+            self.frame = self.fatherView.bounds
+        }else if deviceOrientation.isLandscape{
+            //横向
+            self.frame = CGRect.init(x: -self.fatherView.frame.minX, y: -self.fatherView.frame.minY, width: KScreenWidth, height: KScreenHeight)
+        }
     }
     
     //状态条变化
     @objc private func onStatusBarOrientationChange() {
-        
+        let currentOrientation = UIApplication.shared.statusBarOrientation
+        print(currentOrientation)
+        if currentOrientation.isPortrait{
+            
+        }else{
+            
+        }
     }
     
 }
