@@ -155,8 +155,8 @@ class LYPlayerControllerView: UIView {
     fileprivate var dragged = false
     /** 是否播放结束 */
     fileprivate var playeEnd = false
-    /** 是否全屏播放 */
-    fileprivate var fullScreen = false
+//    /** 是否全屏播放 */
+//    fileprivate var fullScreen = false
     //当前是否操作中
     fileprivate var __isOperationing = false
     fileprivate var isOperationing : Bool{
@@ -594,7 +594,7 @@ extension LYPlayerControllerView{
         self.isOperationing = true
         self.fullScreenBtn.isSelected = !self.fullScreenBtn.isSelected
         if self.delegate != nil{
-            self.delegate?.ly_playerControllerViewFullScreen(self.fullScreen)
+            self.delegate?.ly_playerControllerViewFullScreen(self.fullScreenBtn.isSelected)
         }
     }
     //左上角返回
@@ -694,6 +694,11 @@ extension LYPlayerControllerView{
     //当前缓冲的进度
     func setUpBufferProgressValue(_ value : Float) {
         self.progressView.setProgress(value, animated: false)
+    }
+    
+    //全屏／小屏
+    func setUpFullScreenValue(_ isFull : Bool) {
+        self.fullScreenBtn.isSelected = isFull
     }
     
 }

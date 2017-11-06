@@ -21,6 +21,7 @@ class MoviePlayerViewController: UIViewController {
         
         self.testPlay()
         
+        self.subView.frame = CGRect.init(x: 0, y: 0, width: KScreenWidth, height: 300)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -28,6 +29,7 @@ class MoviePlayerViewController: UIViewController {
         if LYPlayerView.shared.isPauseByUser{
             LYPlayerView.shared.play()
         }
+//        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

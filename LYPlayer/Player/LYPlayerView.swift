@@ -182,6 +182,8 @@ class LYPlayerView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        self.playerLayer?.frame = self.bounds
+        self.controlView?.frame = self.bounds
     }
 }
 
@@ -368,26 +370,113 @@ extension LYPlayerView{
         }
     }
     
+    //MARK:全屏以及小屏幕播放
     // 监测设备方向
     @objc private func onDeviceOrientationChange() {
+        if self.isLocked {return}
         let deviceOrientation = UIDevice.current.orientation
         if deviceOrientation.isPortrait{
-            //垂直
-            self.frame = self.fatherView.bounds
-        }else if deviceOrientation.isLandscape{
-            //横向
-            self.frame = CGRect.init(x: -self.fatherView.frame.minX, y: -self.fatherView.frame.minY, width: KScreenWidth, height: KScreenHeight)
+            self.toOrientation(.portrait)
+        }else if deviceOrientation == .landscapeRight{
+            self.toOrientation(.landscapeLeft)
+        }else if deviceOrientation == .landscapeLeft{
+            self.toOrientation(.landscapeRight)
         }
+        
+//        if deviceOrientation.isPortrait{
+//            self.controlView?.setUpFullScreenValue(false)
+//            //垂直
+//            self.removeFromSuperview()
+//            self.frame = self.fatherView.bounds
+//            self.fatherView.addSubview(self)
+//        }else if deviceOrientation.isLandscape{
+//            //横向
+//            guard let keyWindow = UIApplication.shared.keyWindow else{
+//                return
+//            }
+//            self.controlView?.setUpFullScreenValue(true)
+//            self.removeFromSuperview()
+//            self.frame = keyWindow.bounds
+//            keyWindow.addSubview(self)
+//        }
     }
     
     //状态条变化
     @objc private func onStatusBarOrientationChange() {
-        let currentOrientation = UIApplication.shared.statusBarOrientation
-        print(currentOrientation)
-        if currentOrientation.isPortrait{
+        let orientation = UIApplication.shared.statusBarOrientation
+        print(orientation)
+//        self.toOrientation(orientation)
+//        if currentOrientation.isPortrait{
+//
+//        }else{
+//
+//        }
+    }
+    
+    //改变屏幕
+    func toOrientation(_ orientation : UIInterfaceOrientation) {
+        //当前状态
+//        let currentOrientation = UIApplication.shared.statusBarOrientation
+//        if currentOrientation == orientation{
+//            //如果要转的方向与当前方向一致则取消
+//            return
+//        }
+        //首先设置原旋转角度
+        self.transform = CGAffineTransform()
+        
+        if orientation == .portrait{
+            //垂直
+            self.controlView?.setUpFullScreenValue(false)
+            self.removeFromSuperview()
+            self.frame = self.fatherView.bounds
+            self.fatherView.addSubview(self)
+        }else if orientation == .landscapeLeft{
+            //home在左边
+            guard let keyWindow = UIApplication.shared.keyWindow else{
+                return
+            }
+            self.controlView?.setUpFullScreenValue(true)
+            self.removeFromSuperview()
+            self.frame = keyWindow.bounds
+            keyWindow.addSubview(self)
+//            self.snp.makeConstraints({ (make) in
+//                make.width.equalTo(KScreenHeight)
+//                make.height.equalTo(KScreenWidth)
+//                make.center.equalTo(keyWindow.snp.center)
+//            })
             
-        }else{
+        }else if orientation == .landscapeRight{
+            //home在右边
+            guard let keyWindow = UIApplication.shared.keyWindow else{
+                return
+            }
+            self.controlView?.setUpFullScreenValue(true)
+            self.removeFromSuperview()
+            self.frame = keyWindow.bounds
+            keyWindow.addSubview(self)
+//            self.snp.makeConstraints({ (make) in
+//                make.width.equalTo(KScreenHeight)
+//                make.height.equalTo(KScreenWidth)
+//                make.center.equalTo(keyWindow.snp.center)
+//            })
             
+        }
+//        self.transform = self.getTransformRotation()
+    }
+    
+    
+    //页面应该旋转的角度
+    func getTransformRotation() -> CGAffineTransform {
+        let orientation = UIApplication.shared.statusBarOrientation
+        switch orientation {
+        case .portrait:
+            return CGAffineTransform()
+        case .landscapeLeft:
+            return CGAffineTransform.init(rotationAngle: CGFloat(.pi / 2.0))
+        case .landscapeRight:
+            return CGAffineTransform.init(rotationAngle: CGFloat(-.pi / 2.0))
+        default:
+            return CGAffineTransform()
         }
     }
     
@@ -415,7 +504,32 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     
     func ly_playerControllerViewFullScreen(_ isFull: Bool) {
-        print("FullScreen")
+        let statusBarOrientation = UIApplication.shared.statusBarOrientation
+        if isFull{
+            //
+            guard let keyWindow = UIApplication.shared.keyWindow else{
+                return
+            }
+            self.controlView?.setUpFullScreenValue(true)
+            self.removeFromSuperview()
+            
+            if statusBarOrientation.isPortrait{
+
+            }else if statusBarOrientation.isLandscape{
+                
+            }
+            
+            self.frame = keyWindow.bounds
+            keyWindow.addSubview(self)
+        }else{
+            self.controlView?.setUpFullScreenValue(false)
+            //
+            self.removeFromSuperview()
+            self.frame = self.fatherView.bounds
+            self.fatherView.addSubview(self)
+        }
+        
+        
     }
 
     func ly_playerControllerViewDownload() {
