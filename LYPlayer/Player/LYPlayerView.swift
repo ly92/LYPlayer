@@ -225,7 +225,7 @@ extension LYPlayerView{
     //setting player
     private func configLYPlayer() {
         self.clean()
-        
+        self.backgroundColor = UIColor.red
         self.urlAsset = AVURLAsset.init(url: URL(string:self.videoUrl)!)
         // 初始化playerItem
         self.playerItem = AVPlayerItem.init(asset: self.urlAsset!)
@@ -422,14 +422,20 @@ extension LYPlayerView{
 //            return
 //        }
         //首先设置原旋转角度
-        self.transform = CGAffineTransform()
+        self.transform = CGAffineTransform.identity
         
         if orientation == .portrait{
             //垂直
             self.controlView?.setUpFullScreenValue(false)
             self.removeFromSuperview()
-            self.frame = self.fatherView.bounds
             self.fatherView.addSubview(self)
+            self.snp.makeConstraints({ (make) in
+                make.leading.trailing.equalTo(0)
+                make.size.equalTo(self.fatherView.snp.size)
+//                make.height.equalTo(KScreenHeight)
+//                make.width.equalTo(KScreenWidth)
+            })
+            
         }else if orientation == .landscapeLeft{
             //home在左边
             guard let keyWindow = UIApplication.shared.keyWindow else{
@@ -437,13 +443,14 @@ extension LYPlayerView{
             }
             self.controlView?.setUpFullScreenValue(true)
             self.removeFromSuperview()
-            self.frame = keyWindow.bounds
+//            self.frame = keyWindow.bounds
             keyWindow.addSubview(self)
-//            self.snp.makeConstraints({ (make) in
-//                make.width.equalTo(KScreenHeight)
-//                make.height.equalTo(KScreenWidth)
-//                make.center.equalTo(keyWindow.snp.center)
-//            })
+            self.snp.makeConstraints({ (make) in
+//                make.size.equalTo(UIScreen.main.bounds.size)
+                make.height.equalTo(KScreenWidth)
+                make.width.equalTo(KScreenHeight)
+                make.center.equalTo(keyWindow.snp.center)
+            })
             
         }else if orientation == .landscapeRight{
             //home在右边
@@ -452,16 +459,21 @@ extension LYPlayerView{
             }
             self.controlView?.setUpFullScreenValue(true)
             self.removeFromSuperview()
-            self.frame = keyWindow.bounds
+//            self.frame = keyWindow.bounds
             keyWindow.addSubview(self)
-//            self.snp.makeConstraints({ (make) in
-//                make.width.equalTo(KScreenHeight)
-//                make.height.equalTo(KScreenWidth)
-//                make.center.equalTo(keyWindow.snp.center)
-//            })
+            self.snp.makeConstraints({ (make) in
+//                make.size.equalTo(UIScreen.main.bounds.size)
+                make.height.equalTo(KScreenWidth)
+                make.width.equalTo(KScreenHeight)
+                make.center.equalTo(keyWindow.snp.center)
+            })
             
         }
-//        self.transform = self.getTransformRotation()
+        self.transform = self.getTransformRotation()
+        
+        self.playerLayer?.frame = self.bounds
+        self.controlView?.frame = self.bounds
+        self.controlView?.transform = self.transform
     }
     
     
@@ -470,13 +482,13 @@ extension LYPlayerView{
         let orientation = UIApplication.shared.statusBarOrientation
         switch orientation {
         case .portrait:
-            return CGAffineTransform()
+            return CGAffineTransform.identity
         case .landscapeLeft:
-            return CGAffineTransform.init(rotationAngle: CGFloat(.pi / 2.0))
+            return CGAffineTransform.init(rotationAngle: CGFloat(Double.pi / 2.0))
         case .landscapeRight:
-            return CGAffineTransform.init(rotationAngle: CGFloat(-.pi / 2.0))
+            return CGAffineTransform.init(rotationAngle: -CGFloat(Double.pi / 2.0))
         default:
-            return CGAffineTransform()
+            return CGAffineTransform.identity
         }
     }
     
