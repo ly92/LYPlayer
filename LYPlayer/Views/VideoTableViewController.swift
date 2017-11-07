@@ -45,6 +45,11 @@ class VideoTableViewController: UITableViewController {
         let json = JSON(data:data!)
         self.dataArray = json["videoList"].arrayValue
     }
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get{
+            return .portrait
+        }
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

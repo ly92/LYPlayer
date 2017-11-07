@@ -19,6 +19,12 @@ class DownloadTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get{
+            return .portrait
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

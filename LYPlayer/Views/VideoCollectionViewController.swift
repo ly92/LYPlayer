@@ -53,7 +53,11 @@ class VideoCollectionViewController: UICollectionViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get{
+            return .portrait
+        }
+    }
     
     // MARK: UICollectionViewDataSource
     

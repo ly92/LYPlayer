@@ -63,6 +63,7 @@ extension UINavigationController{
         }
     }
 
+
 }
 
 extension UITabBarController{
@@ -80,8 +81,10 @@ extension UITabBarController{
             guard let value = self.selectedViewController?.supportedInterfaceOrientations else {
                 return .portrait
             }
-                return value
+            return value
         }
     }
+    
+    
 }
 

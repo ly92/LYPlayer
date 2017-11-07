@@ -34,8 +34,8 @@ class MoviePlayerViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if LYPlayerView.shared.isPauseByUser{
-            LYPlayerView.shared.play()
+        if LYPlayerView.shared.isPresentOrPushed{
+            LYPlayerView.shared.isPresentOrPushed = false
         }
 //        self.view.safeAreaInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
     }
@@ -55,7 +55,7 @@ class MoviePlayerViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        LYPlayerView.shared.pause()
+        LYPlayerView.shared.isPresentOrPushed = true
 
     }
     

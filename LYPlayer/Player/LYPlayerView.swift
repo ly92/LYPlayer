@@ -47,6 +47,30 @@ class LYPlayerView: UIView {
 //            self.state = isPauseByUser ? .LYPlayerStatePause : .LYPlayerStatePlaying
         }
     }
+    //当前页面消失
+    var isPresentOrPushed = false{
+        didSet{
+            if self.isPresentOrPushed{
+                self.state = .LYPlayerStatePause
+            }else{
+                if !self.isPauseByUser{
+                    self.state = .LYPlayerStatePlaying
+                }
+            }
+        }
+    }
+    //是否进入后台
+    var didEnterBackground = false{
+        didSet{
+            if self.didEnterBackground{
+                self.state = .LYPlayerStatePause
+            }else{
+                if !self.isPauseByUser && !self.isPresentOrPushed{
+                    self.state = .LYPlayerStatePlaying
+                }
+            }
+        }
+    }
     var isAutoPlay = true//是否自动播放
     var mute = false//是否静音
     var player : AVPlayer?//播放器
@@ -196,11 +220,16 @@ extension LYPlayerView{
     ///   - playerModel: 视频数据
     public func playerControlView(_ superView : UIView, _ playerModel : LYPlayerModel) {
         self.playerModel = playerModel
-        self.setUpSuperView(superView)
+        self.fatherView = superView
+        self.setUpSuperView()
     }
     
     //停止播放，需要清理播放器和移除观察者
     func stopPlay() {
+        let orientation = UIApplication.shared.statusBarOrientation
+        if orientation.isLandscape{
+            UIApplication.shared.statusBarOrientation = .portrait
+        }
         self.state = .LYPlayerStateStopped
         
     }
@@ -211,6 +240,7 @@ extension LYPlayerView{
     }
     //开始播放
     func play() {
+        
         if self.state != .LYPlayerStatePlaying && self.state != .LYPlayerStateFailed{
             self.state = .LYPlayerStatePlaying
         }
@@ -285,22 +315,23 @@ extension LYPlayerView{
     
     
     //设置player的控制层view和superview
-    private func setUpSuperView(_ superView : UIView){
+    private func setUpSuperView(){
         //保证播放组件不为空
         self.configLYPlayer()
         self.controlView = LYPlayerControllerView()
         self.controlView?.playerModel = self.playerModel
         self.controlView?.delegate = self
         //添加view和layer
-        superView.addSubview(self)
+        self.fatherView.addSubview(self)
         self.snp.makeConstraints({ (make) in
-            make.leading.trailing.equalTo(0)
-            make.size.equalTo(superView.snp.size)
+            make.leading.top.equalTo(0)
+            make.size.equalTo(self.fatherView.snp.size)
         })
+        self.transform = CGAffineTransform.identity
         self.controlView?.frame = self.bounds
         self.playerLayer?.frame = self.bounds
         self.layer.addSublayer(self.playerLayer!)
-        self.fatherView = superView
+
         //添加手势
         self.createGesture()
         
@@ -338,19 +369,12 @@ extension LYPlayerView{
     }
     // app退到后台
     @objc private func appDidEnterBackground() {
-        if self.state == .LYPlayerStatePlaying{
-            self.doubleTapAction()
-        }else{
-            self.isPauseByUser = true
-        }
-        
+        self.didEnterBackground = true
     }
     
     // app进入前台
     @objc private func appDidEnterPlayground() {
-        if !self.isPauseByUser{
-            self.doubleTapAction()
-        }
+        self.didEnterBackground = false
     }
     
     // 监听耳机插入和拔掉通知
@@ -377,6 +401,9 @@ extension LYPlayerView{
     // 监测设备方向
     @objc private func onDeviceOrientationChange() {
         if self.isLocked {return}
+        if self.isPresentOrPushed{return}
+        if self.didEnterBackground{return}
+        
         let deviceOrientation = UIDevice.current.orientation
         if deviceOrientation.isPortrait{
             self.toOrientation(.portrait)
@@ -432,7 +459,7 @@ extension LYPlayerView{
             self.removeFromSuperview()
             self.fatherView.addSubview(self)
             self.snp.makeConstraints({ (make) in
-                make.leading.trailing.equalTo(0)
+                make.leading.top.equalTo(0)
                 make.size.equalTo(self.fatherView.snp.size)
             })
         }
@@ -484,6 +511,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     
     func ly_playerControllerViewPause() {
         self.state = .LYPlayerStatePause
+        self.isPauseByUser = true
     }
     
     func ly_playerControllerViewRepeat() {
@@ -555,6 +583,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         if self.isLocked{ return }
         if self.state == .LYPlayerStatePlaying{
             self.state = .LYPlayerStatePause
+            self.isPauseByUser = true
         }else{
             self.state = .LYPlayerStatePlaying
         }
