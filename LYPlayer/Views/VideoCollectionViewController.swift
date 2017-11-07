@@ -52,12 +52,17 @@ class VideoCollectionViewController: UICollectionViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+    // 视图是否自动旋转
+    override var shouldAutorotate : Bool {
         get{
-            return .portrait
+            return false
         }
     }
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+//        get{
+//            return .portrait
+//        }
+//    }
     
     // MARK: UICollectionViewDataSource
     

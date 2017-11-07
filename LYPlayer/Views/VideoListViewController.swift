@@ -38,17 +38,17 @@ class VideoListViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
     
-//    // 视图是否自动旋转
-//    override var shouldAutorotate : Bool {
-//        get{
-//            return true
-//        }
-//    }
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+    // 视图是否自动旋转
+    override var shouldAutorotate : Bool {
         get{
-            return .portrait
+            return false
         }
     }
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+//        get{
+//            return .portrait
+//        }
+//    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

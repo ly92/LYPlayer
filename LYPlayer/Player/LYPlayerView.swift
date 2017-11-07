@@ -145,6 +145,7 @@ class LYPlayerView: UIView {
     fileprivate var volumeViewSlider : UISlider?//声音
     fileprivate var timeObserver : Any?//检测播放进度
     fileprivate var fatherView = UIView()//父级视图
+    fileprivate var isInCellSubView = false//是否存在于cell中
     //是否拖拽中
     fileprivate var isDraging = false{
         didSet{
@@ -219,8 +220,16 @@ extension LYPlayerView{
     ///   - controlView: 控制层
     ///   - playerModel: 视频数据
     public func playerControlView(_ superView : UIView, _ playerModel : LYPlayerModel) {
+        self.isInCellSubView = false
         self.playerModel = playerModel
         self.fatherView = superView
+        self.setUpSuperView()
+    }
+    
+    public func playerControlCellView(cellSubView : UIView, _ playerModel : LYPlayerModel) {
+        self.isInCellSubView = true
+        self.playerModel = playerModel
+        self.fatherView = cellSubView
         self.setUpSuperView()
     }
     
@@ -469,8 +478,6 @@ extension LYPlayerView{
         
         UIView.beginAnimations(nil, context: nil)
         UIView.setAnimationDuration(0.3)
-        
-        
         //首先设置原旋转角度，因为旋转是叠加的
         self.transform = CGAffineTransform.identity
         //旋转视频的方向
@@ -483,6 +490,7 @@ extension LYPlayerView{
     
     //页面应该旋转的角度
     func getTransformRotation() -> CGAffineTransform {
+        
         let orientation = UIApplication.shared.statusBarOrientation
         switch orientation {
         case .landscapeLeft:
@@ -519,16 +527,25 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     
     func ly_playerControllerViewFullScreen(_ isFull: Bool) {
-        if isFull{
-            let deviceOrientation = UIDevice.current.orientation
-            if deviceOrientation == .landscapeLeft{
-                self.toOrientation(.landscapeRight)
-            }else {
-                self.toOrientation(.landscapeLeft)
+//        if self.isInCellSubView{
+//            if isFull{
+//                self.toOrientation(.landscapeRight)
+//            }else{
+//                self.toOrientation(.portrait)
+//            }
+//        }else{
+            if isFull{
+                let deviceOrientation = UIDevice.current.orientation
+                if deviceOrientation == .landscapeLeft{
+                    self.toOrientation(.landscapeRight)
+                }else {
+                    self.toOrientation(.landscapeLeft)
+                }
+            }else{
+                self.toOrientation(.portrait)
             }
-        }else{
-            self.toOrientation(.portrait)
-        }
+//        }
+        
     }
 
     func ly_playerControllerViewDownload() {

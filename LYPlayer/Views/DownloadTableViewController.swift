@@ -20,12 +20,18 @@ class DownloadTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+//        get{
+//            return .portrait
+//        }
+//    }
+    // 视图是否自动旋转
+    override var shouldAutorotate : Bool {
         get{
-            return .portrait
+            return false
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/AppDelegate.swift"
-            timestampString = "531745906.685102"
+            timestampString = "531749027.255067"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "18"
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "531745906.685213"
+            timestampString = "531749027.255169"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "419"
-            endingLineNumber = "419"
+            startingLineNumber = "428"
+            endingLineNumber = "428"
             landmarkName = "onStatusBarOrientationChange()"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "531745906.685281"
+            timestampString = "531749027.255505"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "372"
-            endingLineNumber = "372"
+            startingLineNumber = "381"
+            endingLineNumber = "381"
             landmarkName = "appDidEnterBackground()"
             landmarkType = "7">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "531745906.685336"
+            timestampString = "531749027.255735"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "377"
-            endingLineNumber = "377"
+            startingLineNumber = "386"
+            endingLineNumber = "386"
             landmarkName = "appDidEnterPlayground()"
             landmarkType = "7">
          </BreakpointContent>
