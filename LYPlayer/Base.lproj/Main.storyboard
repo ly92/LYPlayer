@@ -121,11 +121,6 @@
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k26-rP-aBI">
-                                <rect key="frame" x="0.0" y="64" width="414" height="300"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -136,9 +131,6 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hN1-I9-PQ3"/>
                     </view>
-                    <connections>
-                        <outlet property="subView" destination="k26-rP-aBI" id="tMf-qz-IPt"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zAD-CD-Vur" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -44,3 +44,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension UINavigationController{
+    open override var shouldAutorotate: Bool{
+        get{
+            guard let value = self.visibleViewController?.shouldAutorotate else{
+                return true
+            }
+            return value
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get{
+            guard let value = self.visibleViewController?.supportedInterfaceOrientations else{
+                return .portrait
+            }
+            return value
+        }
+    }
+
+}
+
+extension UITabBarController{
+    open override var shouldAutorotate: Bool{
+        get{
+            guard let value = self.selectedViewController?.shouldAutorotate else {
+                return true
+            }
+            return value
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get{
+            guard let value = self.selectedViewController?.supportedInterfaceOrientations else {
+                return .portrait
+            }
+                return value
+        }
+    }
+}
+

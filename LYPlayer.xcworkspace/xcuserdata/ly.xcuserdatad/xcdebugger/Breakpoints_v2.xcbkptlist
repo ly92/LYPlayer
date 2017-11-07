@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/AppDelegate.swift"
-            timestampString = "531671076.452944"
+            timestampString = "531732862.394941"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "18"
@@ -58,12 +58,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "531671076.453503"
+            timestampString = "531732862.395069"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "387"
-            endingLineNumber = "387"
-            landmarkName = "onDeviceOrientationChange()"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
+            landmarkName = "onStatusBarOrientationChange()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LYPlayer/Player/LYPlayerView.swift"
-            timestampString = "531671076.455714"
+            timestampString = "531732862.395138"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "429"
-            endingLineNumber = "429"
+            startingLineNumber = "408"
+            endingLineNumber = "408"
             landmarkName = "toOrientation(_:)"
             landmarkType = "7">
          </BreakpointContent>

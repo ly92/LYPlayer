@@ -11,7 +11,7 @@ import UIKit
 class MoviePlayerViewController: UIViewController {
 
     var url = ""
-    @IBOutlet weak var subView: UIView!
+   var subView = UIView()
     
     
     override func viewDidLoad() {
@@ -21,7 +21,15 @@ class MoviePlayerViewController: UIViewController {
         
         self.testPlay()
         
-        self.subView.frame = CGRect.init(x: 0, y: 0, width: KScreenWidth, height: 300)
+//        self.subView.frame = CGRect.init(x: 0, y: 88, width: KScreenWidth, height: 300)
+        self.subView.backgroundColor = UIColor.purple
+        self.view.addSubview(self.subView)
+        self.subView.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(0)
+            make.top.equalTo(100)
+            make.height.equalTo(300)
+        }
+    
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -29,12 +37,26 @@ class MoviePlayerViewController: UIViewController {
         if LYPlayerView.shared.isPauseByUser{
             LYPlayerView.shared.play()
         }
-//        self.navigationController?.setNavigationBarHidden(true, animated: true)
+//        self.view.safeAreaInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
     }
+    
+    // 视图是否自动旋转
+    override var shouldAutorotate : Bool {
+        get{
+            return false
+        }
+    }
+    
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+//        get{
+//            return .portrait
+//        }
+//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         LYPlayerView.shared.pause()
+
     }
     
     func testPlay() {
