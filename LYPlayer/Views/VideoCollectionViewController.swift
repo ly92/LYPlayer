@@ -87,6 +87,7 @@ class VideoCollectionViewController: UICollectionViewController {
         let cell = collectionView.cellForItem(at: indexPath) as! VideoCollectionCell
         let playerModel = LYPlayerModel()
         playerModel.videoURL = cell.jsonModel["playUrl"].stringValue
+        playerModel.title = cell.jsonModel["title"].stringValue
         LYPlayerView.shared.playerControlView(cell.subView, playerModel)
     }
     

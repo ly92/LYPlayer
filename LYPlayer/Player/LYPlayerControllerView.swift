@@ -96,7 +96,7 @@ class LYPlayerControllerView: UIView {
     /** 缓冲进度条 */
     fileprivate var progressView = UIProgressView()
     /** 滑杆 */
-    //    var videoSlider = LYValueTrackingSlider()
+    var videoSlider = LYValueTrackingSlider()
     /** 全屏按钮 */
     fileprivate var fullScreenBtn = UIButton()
     /** 锁定屏幕方向按钮 */
@@ -152,7 +152,15 @@ class LYPlayerControllerView: UIView {
     /** 在cell上播放 */
     fileprivate var cellVideo = false
     /** 是否拖拽slider控制播放进度 */
-    fileprivate var dragged = false
+    fileprivate var dragged = false{
+        didSet{
+            if self.dragged{
+                self.bottomProgressView.isHidden = true
+            }else{
+                self.bottomProgressView.isHidden = false
+            }
+        }
+    }
     /** 是否播放结束 */
     fileprivate var playeEnd = false
 //    /** 是否全屏播放 */
@@ -203,7 +211,7 @@ class LYPlayerControllerView: UIView {
         self.bottomView.addSubview(self.startBtn)
         self.bottomView.addSubview(self.currentTimeLabel)
         self.bottomView.addSubview(self.progressView)
-        //        self.bottomView.addSubview(self.videoSlider)
+        self.bottomView.addSubview(self.videoSlider)
         self.bottomView.addSubview(self.totalTimeLabel)
         self.bottomView.addSubview(self.fullScreenBtn)
         self.addSubview(self.bottomView)
@@ -231,6 +239,7 @@ class LYPlayerControllerView: UIView {
         self.fastView.isHidden = true
         self.failBtn.isHidden = true
         self.activityView.isHidden = true
+        self.bottomProgressView.isHidden = true
         
         //设置约束
         self.makeSubViewsConstraints()
@@ -352,12 +361,12 @@ extension LYPlayerControllerView{
             make.centerY.equalTo(self.startBtn.snp.centerY)
         }
         
-        //        self.videoSlider.snp.makeConstraints { (make) in
-        //            make.leading.equalTo(self.currentTimeLabel.snp.trailing).offset(4)
-        //            make.trailing.equalTo(self.totalTimeLabel.snp.leading).offset(-4)
-        //            make.centerY.equalTo(self.currentTimeLabel.snp.centerY).offset(-1)
-        //            make.height.equalTo(30)
-        //        }
+        self.videoSlider.snp.makeConstraints { (make) in
+            make.leading.equalTo(self.currentTimeLabel.snp.trailing).offset(4)
+            make.trailing.equalTo(self.totalTimeLabel.snp.leading).offset(-4)
+            make.centerY.equalTo(self.currentTimeLabel.snp.centerY).offset(-1)
+            make.height.equalTo(30)
+        }
         
         self.lockBtn.snp.makeConstraints { (make) in
             make.leading.equalTo(self.snp.leading).offset(15)
@@ -437,6 +446,8 @@ extension LYPlayerControllerView{
     }
     
     func setUpDefaultViewAttribute() {
+        self.titleLabel.textColor = UIColor.white
+        self.titleLabel.font = UIFont.systemFont(ofSize: 14.0)
         self.backBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_back_full"), for: .normal)
         self.downLoadBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_download"), for: .normal)
         self.resolutionBtn.setTitle("|高清|", for: .normal)
@@ -455,7 +466,7 @@ extension LYPlayerControllerView{
         self.bottomImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_bottom_shadow")
         self.progressView.progress = 0
         self.progressView.progressTintColor = UIColor.RGBSA(s: 255, a: 0.5)
-        self.progressView.trackTintColor = UIColor.clear
+        self.progressView.trackTintColor = UIColor.RGBSA(s: 255, a: 0.3)
         
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_lock_nor"), for: .selected)
@@ -486,6 +497,17 @@ extension LYPlayerControllerView{
         self.failBtn.addTarget(self, action: #selector(LYPlayerControllerView.repeatBtnAction), for: .touchUpInside)
         self.downLoadBtn.addTarget(self, action: #selector(LYPlayerControllerView.downloadBtnAction), for: .touchUpInside)
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
+        
+        
+        self.videoSlider.popUpViewCornerRadius = 0.0
+        self.videoSlider.popUpViewColor = UIColor.orange
+        self.videoSlider.popUpViewArrowLength = 8
+        self.videoSlider.setThumbImage(UIImage(named: "LYPlayer.bundle/LYPlayer_slider"), for: .normal)
+        self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderBeginAction(_:)), for: .touchDown)
+        self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderValueChange(_:)), for: .valueChanged)
+        self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderEndAction(_:)), for: .touchUpInside)
+        self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderEndAction(_:)), for: .touchCancel)
+        self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderEndAction(_:)), for: .touchUpOutside)
         
         
         
@@ -547,6 +569,24 @@ extension LYPlayerControllerView{
     
     
 }
+
+
+
+//MARK: - 滑杆事件
+extension LYPlayerControllerView{
+    @objc func videoSliderBeginAction(_ slider : LYValueTrackingSlider){
+        self.dragged = true
+    }
+    
+    @objc func videoSliderValueChange(_ slider : LYValueTrackingSlider){
+        print(slider.value)
+    }
+    
+    @objc func videoSliderEndAction(_ slider : LYValueTrackingSlider){
+        self.dragged = false
+    }
+}
+
 
 //MARK: - 按钮点击事件
 extension LYPlayerControllerView{
@@ -639,11 +679,12 @@ extension LYPlayerControllerView{
             return//已隐藏
         }
         self.isShow = !self.isShow
-        UIView.animate(withDuration: 0.5) {
-            self.topView.alpha = 0
-            self.bottomView.alpha = 0
-            self.lockBtn.alpha = 0
-        }
+//        UIView.animate(withDuration: 0.5) {
+//            self.topView.alpha = 0
+//            self.bottomView.alpha = 0
+//            self.lockBtn.alpha = 0
+//            self.bottomProgressView.isHidden = false
+//        }
     }
     
     //显示按钮
@@ -653,6 +694,7 @@ extension LYPlayerControllerView{
         }
         self.isShow = !self.isShow
         self.lockBtn.alpha = 1
+        self.bottomProgressView.isHidden = true
         if self.lockBtn.isSelected{
             self.topView.alpha = 0
             self.bottomView.alpha = 0
@@ -682,6 +724,10 @@ extension LYPlayerControllerView{
         let current = value * totalTime
         self.currentTimeLabel.text = self.transferSecToMin(second: NSInteger(current))
         self.totalTimeLabel.text = self.transferSecToMin(second: NSInteger(totalTime))
+        
+        self.bottomProgressView.progress = Float(value)
+//        self.videoSlider.maximumValue = Float(totalTime)
+        self.videoSlider.value = Float(value)
     }
     //秒转分
     func transferSecToMin(second:NSInteger) -> String {

@@ -89,6 +89,7 @@ class VideoTableViewController: UITableViewController {
         let cell = tableView.cellForRow(at: indexPath) as! VideoTableCell
         let playerModel = LYPlayerModel()
         playerModel.videoURL = cell.jsonModel["playUrl"].stringValue
+        playerModel.title = cell.jsonModel["title"].stringValue
         LYPlayerView.shared.playerControlView(cell.subView, playerModel)
         
     }

@@ -36,7 +36,7 @@ class LYValuePopUpView: UIView {
         self.layer.anchorPoint = CGPoint.init(x: 0.5, y: 1)
         
         self.isUserInteractionEnabled = false
-        self.pathLayer = self.layer as! CAShapeLayer
+        self.pathLayer = CAShapeLayer.init(layer: self.layer)
         
         self.cornerRadius = 4.0
         self.arrowLength = 13.0
@@ -54,7 +54,7 @@ class LYValuePopUpView: UIView {
         self.addSubview(self.timeLabel)
         
         self.imageView = UIImageView(frame:CGRect.zero)
-        self.imageView.addSubview(self.imageView)
+        self.addSubview(self.imageView)
         
     }
     

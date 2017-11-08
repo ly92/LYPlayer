@@ -536,10 +536,10 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
 //        }else{
             if isFull{
                 let deviceOrientation = UIDevice.current.orientation
-                if deviceOrientation == .landscapeLeft{
-                    self.toOrientation(.landscapeRight)
-                }else {
+                if deviceOrientation == .landscapeRight{
                     self.toOrientation(.landscapeLeft)
+                }else {
+                    self.toOrientation(.landscapeRight)
                 }
             }else{
                 self.toOrientation(.portrait)
@@ -680,6 +680,9 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     //播放进度
     func horizontalMoved(value : CGFloat) {
+        if self.state != .LYPlayerStatePlaying && self.state != .LYPlayerStatePause && self.state != .LYPlayerStateReadyPlay{
+            return
+        }
         // 每次滑动需要叠加时间
         self.sumTime = self.sumTime + value / 200
         // 需要限定sumTime的范围
@@ -687,6 +690,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
             return
         }
         let totalTime = CGFloat(durationTime.value) / CGFloat(durationTime.timescale)
+
         if self.sumTime > totalTime {
             self.sumTime = totalTime
         }else if self.sumTime < 0{

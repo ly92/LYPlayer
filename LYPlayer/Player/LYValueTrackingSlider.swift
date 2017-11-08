@@ -49,6 +49,14 @@ class LYValueTrackingSlider: UISlider {
         get{
             return self.popUpView.color != nil ? self.popUpView.color! : self.popUpViewColor2
         }
+        set{
+//            popUpViewColor = newValue
+            self.popUpViewAnimatedColors.removeAll()
+            self.popUpView.color = newValue
+            if self.autoAdjustTrackColor{
+                super.minimumTrackTintColor = self.popUpView.opaqueColor
+            }
+        }
     }
     
     // pass an array of 2 or more UIColors to animate the color change as the slider moves
@@ -62,12 +70,18 @@ class LYValueTrackingSlider: UISlider {
         get{
             return self.popUpView.cornerRadius
         }
+        set{
+            self.popUpView.cornerRadius = newValue
+        }
     }
     
     // arrow height of the popUpView, default is 13.0
     var popUpViewArrowLength : CGFloat{
         get{
             return self.popUpView.arrowLength
+        }
+        set{
+            self.popUpView.arrowLength = newValue
         }
     }
 
