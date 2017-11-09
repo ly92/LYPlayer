@@ -21,6 +21,8 @@ protocol LYPlayerControllerViewDelegate {
     func ly_playerControllerViewBack()
     func ly_playerControllerViewClose()
     func ly_playerControllerViewLock(_ isLock:Bool)
+    func ly_playerControllerViewSliderClick(_ value : CGFloat)
+//    func ly_playerControllerViewSliderDraging(_ value : CGFloat)
 }
 
 class LYPlayerControllerView: UIView {
@@ -144,7 +146,8 @@ class LYPlayerControllerView: UIView {
     fileprivate var bottomProgressView = UIProgressView()
     /** 分辨率的名称 */
     fileprivate var resolutionArray = Array<Any>()
-    
+    /** 视频总时长 */
+    fileprivate var totalTime : CGFloat = 0
     /** 显示控制层 */
     var isShow = false//当前是否显示
     /** 小屏播放 */
@@ -156,8 +159,12 @@ class LYPlayerControllerView: UIView {
         didSet{
             if self.dragged{
                 self.bottomProgressView.isHidden = true
+                
             }else{
-                self.bottomProgressView.isHidden = false
+                //两秒后隐藏
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5, execute: {
+                    self.hideControlView()
+                })
             }
         }
     }
@@ -169,17 +176,19 @@ class LYPlayerControllerView: UIView {
     fileprivate var __isOperationing = false
     fileprivate var isOperationing : Bool{
         set{
-            //如果设置当前为操作状态且旧值为false，5秒后自动变为非操作状态，设置当前为非操作状态时询问隐藏
+            //如果设置当前为操作状态且旧值为false，8秒后自动变为非操作状态，设置当前为非操作状态时询问隐藏
             if newValue{
                 if (!__isOperationing){
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 8.0) {
                         self.isOperationing = false
                     }
                 }
+                __isOperationing = newValue
             }else{
+                __isOperationing = newValue
                 self.hideControlView()
             }
-            __isOperationing = newValue
+            
         }
         get{
             return __isOperationing
@@ -467,6 +476,8 @@ extension LYPlayerControllerView{
         self.progressView.progress = 0
         self.progressView.progressTintColor = UIColor.RGBSA(s: 255, a: 0.5)
         self.progressView.trackTintColor = UIColor.RGBSA(s: 255, a: 0.3)
+        self.bottomProgressView.trackTintColor = UIColor.gray
+        self.bottomProgressView.progressTintColor = UIColor.white
         
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_unlock_nor"), for: .normal)
         self.lockBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_lock_nor"), for: .selected)
@@ -502,14 +513,23 @@ extension LYPlayerControllerView{
         self.videoSlider.popUpViewCornerRadius = 0.0
         self.videoSlider.popUpViewColor = UIColor.orange
         self.videoSlider.popUpViewArrowLength = 8
+        self.videoSlider.maximumTrackTintColor = UIColor.clear
+        self.videoSlider.minimumTrackTintColor = UIColor.white
         self.videoSlider.setThumbImage(UIImage(named: "LYPlayer.bundle/LYPlayer_slider"), for: .normal)
         self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderBeginAction(_:)), for: .touchDown)
         self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderValueChange(_:)), for: .valueChanged)
         self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderEndAction(_:)), for: .touchUpInside)
         self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderEndAction(_:)), for: .touchCancel)
         self.videoSlider.addTarget(self, action: #selector(LYPlayerControllerView.videoSliderEndAction(_:)), for: .touchUpOutside)
-        
-        
+        let pan = UIPanGestureRecognizer.init(target: self, action: #selector(LYPlayerControllerView.sliderPanDirection(_:)))
+        pan.delegate = self
+        pan.maximumNumberOfTouches = 1
+        pan.cancelsTouchesInView = false
+        self.videoSlider.addGestureRecognizer(pan)
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(LYPlayerControllerView.sliderTapAction(_:)))
+        tap.delegate = self
+        tap.numberOfTapsRequired = 1
+        self.videoSlider.addGestureRecognizer(tap)
         
         self.showControlView()
     }
@@ -573,18 +593,52 @@ extension LYPlayerControllerView{
 
 
 //MARK: - 滑杆事件
-extension LYPlayerControllerView{
+extension LYPlayerControllerView : UIGestureRecognizerDelegate{
     @objc func videoSliderBeginAction(_ slider : LYValueTrackingSlider){
         self.dragged = true
+        if !self.fullScreenBtn.isSelected{
+            self.isDraging = true
+        }
     }
     
     @objc func videoSliderValueChange(_ slider : LYValueTrackingSlider){
-        print(slider.value)
+        if self.fullScreenBtn.isSelected{
+            self.videoSlider.showPopUpViewAnimated(animate: true)
+        }else{
+            if self.totalTime <= 0{return}
+            let time = CGFloat(slider.value) * totalTime
+            if slider.value > self.bottomProgressView.progress{
+                self.changeDragSections(dragSec: time, totalTime: totalTime, type: true)
+            }else if slider.value < self.bottomProgressView.progress{
+                self.changeDragSections(dragSec: time, totalTime: totalTime, type: false)
+            }
+        }
     }
     
     @objc func videoSliderEndAction(_ slider : LYValueTrackingSlider){
         self.dragged = false
+        self.isDraging = false
+        self.videoSlider.value = slider.value
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewSliderClick(CGFloat(slider.value))
+        }
     }
+    
+    //滑杆的点击事件
+    @objc func sliderTapAction(_ tap : UIGestureRecognizer){
+        self.isOperationing = true
+        guard let slider = tap.view as? UISlider else {
+            return
+        }
+        let location = tap.location(in: slider)
+        let scal =  location.x / slider.frame.size.width
+        if self.delegate != nil{
+            self.delegate?.ly_playerControllerViewSliderClick(scal)
+        }
+    }
+    
+    // 不做处理，只是为了滑动slider其他地方不响应其他手势
+    @objc func sliderPanDirection(_ pan : UIGestureRecognizer){}
 }
 
 
@@ -675,16 +729,17 @@ extension LYPlayerControllerView{
 extension LYPlayerControllerView{
     //设置隐藏
     func hideControlView() {
-        if !self.isShow || self.isOperationing{
-            return//已隐藏
+        //已隐藏
+        if !self.isShow || self.isOperationing || self.dragged{
+            return
         }
         self.isShow = !self.isShow
-//        UIView.animate(withDuration: 0.5) {
-//            self.topView.alpha = 0
-//            self.bottomView.alpha = 0
-//            self.lockBtn.alpha = 0
-//            self.bottomProgressView.isHidden = false
-//        }
+        UIView.animate(withDuration: 0.5) {
+            self.topView.alpha = 0
+            self.bottomView.alpha = 0
+            self.lockBtn.alpha = 0
+            self.bottomProgressView.isHidden = false
+        }
     }
     
     //显示按钮
@@ -703,7 +758,7 @@ extension LYPlayerControllerView{
             self.bottomView.alpha = 1
         }
         //3秒后自动隐藏
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
             self.hideControlView()
         }
     }
@@ -721,13 +776,15 @@ extension LYPlayerControllerView{
 
     // 添加播放进度
     func setPlayerSchedule(value:CGFloat, totalTime:CGFloat) {
+        self.totalTime = totalTime
         let current = value * totalTime
         self.currentTimeLabel.text = self.transferSecToMin(second: NSInteger(current))
         self.totalTimeLabel.text = self.transferSecToMin(second: NSInteger(totalTime))
         
         self.bottomProgressView.progress = Float(value)
-//        self.videoSlider.maximumValue = Float(totalTime)
-        self.videoSlider.value = Float(value)
+        if !self.dragged{
+            self.videoSlider.value = Float(value)
+        }
     }
     //秒转分
     func transferSecToMin(second:NSInteger) -> String {

@@ -62,7 +62,7 @@ class MoviePlayerViewController: UIViewController {
     func testPlay() {
         let playerModel = LYPlayerModel()
         playerModel.videoURL = self.url
-        LYPlayerView.shared.isAutoPlay = false
+//        LYPlayerView.shared.isAutoPlay = false
         LYPlayerView.shared.playerControlView(self.subView, playerModel)
     }
 
