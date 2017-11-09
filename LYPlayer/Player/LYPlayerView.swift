@@ -507,11 +507,30 @@ extension LYPlayerView{
 
 //MARK: - 播放进度以及播放状态
 extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDelegate{
-
     //MARK: 控制层代理方法
     func ly_playerControllerViewLock(_ isLock: Bool) {
         self.isLocked = isLock
     }
+    
+    func ly_playerControllerViewSliderClick(_ value: CGFloat) {
+        if value > 1 || value < 0{
+            //超出播放范围
+            return
+        }
+        
+        if self.state != .LYPlayerStatePlaying && self.state != .LYPlayerStatePause && self.state != .LYPlayerStateReadyPlay{
+            return
+        }
+        // 需要限定sumTime的范围
+        guard let durationTime = self.playerItem?.duration else {
+            return
+        }
+        let totalTime = CGFloat(durationTime.value) / CGFloat(durationTime.timescale)
+        //更改播放进度
+        self.seekToTime(dragedSeconds: totalTime * value, completionHandler: nil)
+        
+    }
+    
     
     func ly_playerControllerViewPlay() {
         self.state = .LYPlayerStatePlaying
@@ -696,6 +715,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         }else if self.sumTime < 0{
             self.sumTime = 0
         }
+        
         if value > 0{
             self.controlView?.changeDragSections(dragSec: self.sumTime, totalTime: totalTime, type: true)
         }else if value < 0{
