@@ -22,4 +22,5 @@ build
 .*.swp
 .DS_Store
 LYPlayer.xcodeproj/xcuserdata
+LYPlayer.xcworkspace/xcuserdata
 LYPlayer.xcodeproj/project.xcworkspace
