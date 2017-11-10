@@ -33,6 +33,9 @@ class LYValuePopUpView: UIView {
     //
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.backgroundColor = UIColor.blue
+        
         self.layer.anchorPoint = CGPoint.init(x: 0.5, y: 1)
         
         self.isUserInteractionEnabled = false
