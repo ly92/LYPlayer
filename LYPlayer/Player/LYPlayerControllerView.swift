@@ -87,6 +87,17 @@ class LYPlayerControllerView: UIView {
         }
     }
     
+    //用于播放网络音视频资源
+    var urlAsset : AVURLAsset?{
+        didSet{
+            if urlAsset != nil{
+                self.imageGenerator = AVAssetImageGenerator.init(asset: self.urlAsset!)
+            }
+        }
+    }
+    var imageGenerator : AVAssetImageGenerator?//获取视频某帧的图片
+    var thumbImg : UIImage?//记录slider预览图
+    
     /** 标题 */
     fileprivate var titleLabel = UILabel()
     /** 开始播放按钮 */
@@ -601,12 +612,36 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
         }
     }
     
+    //滑杆滑动的效果
     @objc func videoSliderValueChange(_ slider : LYValueTrackingSlider){
+        if self.totalTime <= 0{return}
+        let time = CGFloat(slider.value) * totalTime
         if self.fullScreenBtn.isSelected{
             self.videoSlider.showPopUpViewAnimated(animate: true)
+            self.imageGenerator?.cancelAllCGImageGeneration()
+            self.imageGenerator?.appliesPreferredTrackTransform = true
+            self.imageGenerator?.maximumSize = CGSize.init(width: 100, height: 56)
+            let cmTime = CMTime.init(value: CMTimeValue(time), timescale: 1)
+            self.imageGenerator?.generateCGImagesAsynchronously(forTimes: [NSValue.init(time: cmTime)], completionHandler: { (requestedTime, im, actualTime, result, error) in
+                print(result)
+                if result != AVAssetImageGeneratorResult.succeeded{
+                    if self.thumbImg != nil{
+                        DispatchQueue.main.async {
+                            self.videoSlider.setText(text: self.transferSecToMin(second: NSInteger(time)))
+                            self.videoSlider.setImage(image: self.thumbImg!)
+                        }
+                    }
+                }else{
+                    if im != nil{
+                        self.thumbImg = UIImage.init(cgImage: im!)
+                        DispatchQueue.main.async {
+                            self.videoSlider.setText(text: self.transferSecToMin(second: NSInteger(time)))
+                            self.videoSlider.setImage(image: self.thumbImg!)
+                        }
+                    }
+                }
+            })
         }else{
-            if self.totalTime <= 0{return}
-            let time = CGFloat(slider.value) * totalTime
             if slider.value > self.bottomProgressView.progress{
                 self.changeDragSections(dragSec: time, totalTime: totalTime, type: true)
             }else if slider.value < self.bottomProgressView.progress{

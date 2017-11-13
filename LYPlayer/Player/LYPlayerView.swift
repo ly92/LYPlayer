@@ -331,6 +331,7 @@ extension LYPlayerView{
         self.controlView = LYPlayerControllerView()
         self.controlView?.playerModel = self.playerModel
         self.controlView?.delegate = self
+        self.controlView?.urlAsset = self.urlAsset
         //添加view和layer
         self.transform = CGAffineTransform.identity
         let statusBarOrientation = UIApplication.shared.statusBarOrientation
