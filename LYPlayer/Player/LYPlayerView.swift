@@ -265,6 +265,7 @@ extension LYPlayerView{
     private func configLYPlayer() {
         self.clean()
         self.backgroundColor = UIColor.red
+        self.alpha = 0.8
         self.urlAsset = AVURLAsset.init(url: URL(string:self.videoUrl)!)
         // 初始化playerItem
         self.playerItem = AVPlayerItem.init(asset: self.urlAsset!)
@@ -331,12 +332,33 @@ extension LYPlayerView{
         self.controlView?.playerModel = self.playerModel
         self.controlView?.delegate = self
         //添加view和layer
-        self.fatherView.addSubview(self)
-        self.snp.makeConstraints({ (make) in
-            make.leading.top.equalTo(0)
-            make.size.equalTo(self.fatherView.snp.size)
-        })
         self.transform = CGAffineTransform.identity
+        let statusBarOrientation = UIApplication.shared.statusBarOrientation
+        if statusBarOrientation.isPortrait{
+            self.fatherView.addSubview(self)
+            self.snp.makeConstraints({ (make) in
+                make.leading.top.equalTo(0)
+                make.size.equalTo(self.fatherView.snp.size)
+            })
+            self.controlView?.setUpFullScreenValue(false)
+        }else{
+            //
+            guard let keyWindow = UIApplication.shared.keyWindow else{
+                //设置状态栏方向
+                UIApplication.shared.statusBarOrientation = .portrait
+                self.setUpSuperView()
+                return
+            }
+            self.controlView?.setUpFullScreenValue(true)
+            keyWindow.addSubview(self)
+            self.snp.makeConstraints({ (make) in
+                make.height.equalTo(KScreenWidth)
+                make.width.equalTo(KScreenHeight)
+                make.center.equalTo(keyWindow.snp.center)
+            })
+            self.transform = self.getTransformRotation()
+        }
+        
         self.controlView?.frame = self.bounds
         self.playerLayer?.frame = self.bounds
         self.layer.addSublayer(self.playerLayer!)
@@ -445,7 +467,6 @@ extension LYPlayerView{
         }
         
         
-        
         if orientation.isLandscape{
             //横屏播放
             if currentOrientation.isPortrait{
@@ -542,7 +563,10 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     
     func ly_playerControllerViewRepeat() {
-        self.playerControlView(self.superview!, self.playerModel)
+        //更改播放进度
+//        self.state = .LYPlayerStatePlaying
+//        self.seekToTime(dragedSeconds: 0, completionHandler: nil)
+        self.playerControlView(self.fatherView, self.playerModel)
     }
     
     func ly_playerControllerViewFullScreen(_ isFull: Bool) {
