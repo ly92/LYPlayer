@@ -165,6 +165,8 @@ class LYPlayerControllerView: UIView {
     fileprivate var shrink = false
     /** 在cell上播放 */
     fileprivate var cellVideo = false
+    /** 滑杆值 */
+    fileprivate var sliderValue : Float = 0
     /** 是否拖拽slider控制播放进度 */
     fileprivate var dragged = false{
         didSet{
@@ -614,7 +616,10 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
     
     //滑杆滑动的效果
     @objc func videoSliderValueChange(_ slider : LYValueTrackingSlider){
-        if self.totalTime <= 0{return}
+        if self.totalTime <= 0{
+            slider.value = 0
+            return
+        }
         let time = CGFloat(slider.value) * totalTime
         if self.fullScreenBtn.isSelected{
             self.videoSlider.showPopUpViewAnimated(animate: true)
@@ -642,11 +647,14 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
                 }
             })
         }else{
-            if slider.value > self.bottomProgressView.progress{
-                self.changeDragSections(dragSec: time, totalTime: totalTime, type: true)
-            }else if slider.value < self.bottomProgressView.progress{
-                self.changeDragSections(dragSec: time, totalTime: totalTime, type: false)
-            }
+            let isPlus = (self.sliderValue - slider.value) < 0
+            self.sliderValue = slider.value
+            self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
+//            if slider.value > self.bottomProgressView.progress{
+//                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
+//            }else if slider.value < self.bottomProgressView.progress{
+//                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
+//            }
         }
     }
     

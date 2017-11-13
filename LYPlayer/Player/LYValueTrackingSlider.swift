@@ -357,19 +357,3 @@ extension LYValueTrackingSlider : LYValuePopUpViewDelegate{
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
