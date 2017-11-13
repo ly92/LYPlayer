@@ -33,13 +33,15 @@ class LYValuePopUpView: UIView {
     //
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+//        self.backgroundColor = UIColor.black
         self.layer.anchorPoint = CGPoint.init(x: 0.5, y: 1)
         
         self.isUserInteractionEnabled = false
         self.pathLayer = CAShapeLayer.init(layer: self.layer)
         
         self.cornerRadius = 4.0
+//        self.clipsToBounds = true
+//        self.layer.cornerRadius = self.cornerRadius
         self.arrowLength = 13.0
         self.widthPaddingFactor = 1.15
         self.heightPaddingFactor = 1.1
@@ -56,10 +58,6 @@ class LYValuePopUpView: UIView {
         
         self.imageView = UIImageView(frame:CGRect.zero)
         self.addSubview(self.imageView)
-        
-        
-        self.imageView.backgroundColor = UIColor.red
-        self.timeLabel.backgroundColor = UIColor.yellow
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -108,7 +106,8 @@ class LYValuePopUpView: UIView {
     func setAnimated(offset : CGFloat, returnColor : ((UIColor) -> Void)) {
         if (self.colorAnimLayer.animation(forKey: SliderFillColorAnim) != nil){
             self.colorAnimLayer.timeOffset = CFTimeInterval(offset)
-            self.pathLayer.fillColor = self.colorAnimLayer.fillColor
+//            self.pathLayer.fillColor = self.colorAnimLayer.fillColor
+            self.pathLayer.fillColor = UIColor.red.cgColor
             returnColor(self.opaqueColor)
         }
     }
@@ -124,6 +123,9 @@ class LYValuePopUpView: UIView {
         self.layer.anchorPoint = CGPoint.init(x: anchorX, y: 1)
         self.layer.position = CGPoint.init(x: frame.minX + frame.width * anchorX, y: 0)
         self.layer.bounds = CGRect.init(origin: CGPoint.zero, size: frame.size)
+        
+        
+        
     }
     
     
@@ -181,6 +183,21 @@ class LYValuePopUpView: UIView {
             })
         }
         CATransaction.commit()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.timeLabel.snp.makeConstraints { (make) in
+            make.top.leading.trailing.equalTo(0)
+            make.height.equalTo(13)
+        }
+        self.imageView.snp.makeConstraints { (make) in
+            make.leading.equalTo(5)
+            make.trailing.equalTo(-5)
+            make.height.equalTo(56)
+            make.top.equalTo(self.timeLabel.snp.bottom)
+        }
     }
     
     //

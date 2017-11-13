@@ -222,7 +222,7 @@ class LYValueTrackingSlider: UISlider {
     func showPopUpViewAnimated(animate : Bool) {
         self.popUpViewAlwaysOn = true
         if self.delegate != nil{
-            self.delegate?.sliderWillHidePopUpView(slider: self)
+            self.delegate?.sliderWillDisplayPopUpView(slider: self)
         }
         self.popUpView.showAnimated(animate: animate)
     }

@@ -523,7 +523,7 @@ extension LYPlayerControllerView{
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
         
         
-        self.videoSlider.popUpViewCornerRadius = 0.0
+        self.videoSlider.popUpViewCornerRadius = 4.0
         self.videoSlider.popUpViewColor = UIColor.orange
         self.videoSlider.popUpViewArrowLength = 8
         self.videoSlider.maximumTrackTintColor = UIColor.clear
@@ -662,6 +662,7 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
         self.dragged = false
         self.isDraging = false
         self.videoSlider.value = slider.value
+        self.videoSlider.hidePopUpViewAnimated(animate: false)
         if self.delegate != nil{
             self.delegate?.ly_playerControllerViewSliderClick(CGFloat(slider.value))
         }
