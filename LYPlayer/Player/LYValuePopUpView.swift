@@ -33,24 +33,22 @@ class LYValuePopUpView: UIView {
     //
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        self.backgroundColor = UIColor.black
         self.layer.anchorPoint = CGPoint.init(x: 0.5, y: 1)
         
         self.isUserInteractionEnabled = false
         self.pathLayer = CAShapeLayer.init(layer: self.layer)
+        self.layer.addSublayer(self.pathLayer)
         
         self.cornerRadius = 4.0
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = self.cornerRadius
         self.arrowLength = 13.0
         self.widthPaddingFactor = 1.15
         self.heightPaddingFactor = 1.1
         
         self.colorAnimLayer = CAShapeLayer()
         self.layer.addSublayer(self.colorAnimLayer)
-        
+
         self.timeLabel = UILabel()
-        self.timeLabel.text = "10:00"
+        self.timeLabel.text = "00:00"
         self.timeLabel.font = UIFont.systemFont(ofSize: 10.0)
         self.timeLabel.textAlignment = .center
         self.timeLabel.textColor = UIColor.white
@@ -106,8 +104,7 @@ class LYValuePopUpView: UIView {
     func setAnimated(offset : CGFloat, returnColor : ((UIColor) -> Void)) {
         if (self.colorAnimLayer.animation(forKey: SliderFillColorAnim) != nil){
             self.colorAnimLayer.timeOffset = CFTimeInterval(offset)
-//            self.pathLayer.fillColor = self.colorAnimLayer.fillColor
-            self.pathLayer.fillColor = UIColor.red.cgColor
+            self.pathLayer.fillColor = self.colorAnimLayer.fillColor
             returnColor(self.opaqueColor)
         }
     }
@@ -123,8 +120,6 @@ class LYValuePopUpView: UIView {
         self.layer.anchorPoint = CGPoint.init(x: anchorX, y: 1)
         self.layer.position = CGPoint.init(x: frame.minX + frame.width * anchorX, y: 0)
         self.layer.bounds = CGRect.init(origin: CGPoint.zero, size: frame.size)
-        
-        
         
     }
     
@@ -249,23 +244,21 @@ extension LYValuePopUpView : CAAnimationDelegate{
     
     func pathForRect(rect : CGRect, arrowOffset : CGFloat) -> UIBezierPath {
         if rect.equalTo(CGRect.zero){return UIBezierPath.init()}
-        
         let rect2 = CGRect.init(origin: CGPoint.zero, size: rect.size)
         var roundedRect = rect2
         roundedRect.size.height -= self.arrowLength
         let popUpPath = UIBezierPath.init(roundedRect: roundedRect, cornerRadius: self.cornerRadius)
-        let arrowTipX = rect2.maxX + arrowOffset
-        let tip = CGPoint.init(x: arrowTipX, y: rect2.maxY)
-        
-        let arrowLH = roundedRect.size.height / 2.0
-        let x = arrowLH * tan(45.0 * CGFloat(Double.pi/180))
         
         let arrowPath = UIBezierPath()
+        let arrowTipX = arrowOffset + rect2.size.width / 2.0
+        let tip = CGPoint.init(x: arrowTipX, y: rect2.maxY)
+        let x = self.arrowLength
         arrowPath.move(to: tip)
-        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX - x) > 0 ? arrowTipX - x : 0, y: roundedRect.maxY - arrowLH))
-        arrowPath.addLine(to: CGPoint.init(x: arrowTipX + x > roundedRect.maxX ? roundedRect.maxX : arrowTipX + x, y: roundedRect.maxY - arrowLH))
+        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX - x) > 0 ? arrowTipX - x : 0, y: roundedRect.maxY))
+        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX + x) > roundedRect.maxX ? roundedRect.maxX : arrowTipX + x, y: roundedRect.maxY))
         arrowPath.close()
         popUpPath.append(arrowPath)
+        
         return popUpPath
     }
     

@@ -523,8 +523,8 @@ extension LYPlayerControllerView{
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
         
         
-        self.videoSlider.popUpViewCornerRadius = 4.0
-        self.videoSlider.popUpViewColor = UIColor.orange
+//        self.videoSlider.popUpViewCornerRadius = 4.0
+//        self.videoSlider.popUpViewColor = UIColor.orange
         self.videoSlider.popUpViewArrowLength = 8
         self.videoSlider.maximumTrackTintColor = UIColor.clear
         self.videoSlider.minimumTrackTintColor = UIColor.white
@@ -628,7 +628,7 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
             self.imageGenerator?.maximumSize = CGSize.init(width: 100, height: 56)
             let cmTime = CMTime.init(value: CMTimeValue(time), timescale: 1)
             self.imageGenerator?.generateCGImagesAsynchronously(forTimes: [NSValue.init(time: cmTime)], completionHandler: { (requestedTime, im, actualTime, result, error) in
-                print(result)
+//                print(result)
                 if result != AVAssetImageGeneratorResult.succeeded{
                     if self.thumbImg != nil{
                         DispatchQueue.main.async {

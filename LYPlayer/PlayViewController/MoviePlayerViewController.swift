@@ -27,7 +27,7 @@ class MoviePlayerViewController: UIViewController {
         self.subView.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(0)
             make.top.equalTo(100)
-            make.height.equalTo(300)
+            make.height.equalTo(250)
         }
     
     }
