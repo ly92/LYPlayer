@@ -22,12 +22,12 @@ protocol LYPlayerControllerViewDelegate {
     func ly_playerControllerViewClose()
     func ly_playerControllerViewLock(_ isLock:Bool)
     func ly_playerControllerViewSliderClick(_ value : CGFloat)
-//    func ly_playerControllerViewSliderDraging(_ value : CGFloat)
+    //    func ly_playerControllerViewSliderDraging(_ value : CGFloat)
 }
 
 class LYPlayerControllerView: UIView {
     
-   
+    
     var delegate : LYPlayerControllerViewDelegate?
     //播放器的几种状态
     var state : LYPlayerState = .LYPlayerStateBuffering{
@@ -41,10 +41,10 @@ class LYPlayerControllerView: UIView {
             if self.activity.isAnimating && state != .LYPlayerStateBuffering{
                 self.activity.stopAnimating()
             }
-
+            
             if state == .LYPlayerStatePlaying{
                 self.startBtn.isSelected = true
-
+                
             }else if state == .LYPlayerStateReadyPlay{
                 //准备播放
                 self.playBtn.isHidden = false
@@ -57,7 +57,7 @@ class LYPlayerControllerView: UIView {
             }else if state == .LYPlayerStateFailed{
                 self.placeholderImageView.isHidden = false
                 self.failBtn.isHidden = false
-
+                
             }else if state == .LYPlayerStateStopped{
                 self.repeatBtn.isHidden = false
                 
@@ -161,6 +161,9 @@ class LYPlayerControllerView: UIView {
     fileprivate var totalTime : CGFloat = 0
     /** 显示控制层 */
     var isShow = false//当前是否显示
+    /** 控制显示的计时器 */
+    fileprivate var hideTimer : Timer?
+    fileprivate var shouldHide = false//刚添加计时器时不隐藏
     /** 小屏播放 */
     fileprivate var shrink = false
     /** 在cell上播放 */
@@ -172,39 +175,19 @@ class LYPlayerControllerView: UIView {
         didSet{
             if self.dragged{
                 self.bottomProgressView.isHidden = true
-                
             }else{
-                //两秒后隐藏
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5, execute: {
-                    self.hideControlView()
-                })
+                self.setUpHideShowTimer()
             }
         }
     }
     /** 是否播放结束 */
     fileprivate var playeEnd = false
-//    /** 是否全屏播放 */
-//    fileprivate var fullScreen = false
+    //    /** 是否全屏播放 */
+    //    fileprivate var fullScreen = false
     //当前是否操作中
-    fileprivate var __isOperationing = false
-    fileprivate var isOperationing : Bool{
-        set{
-            //如果设置当前为操作状态且旧值为false，8秒后自动变为非操作状态，设置当前为非操作状态时询问隐藏
-            if newValue{
-                if (!__isOperationing){
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 8.0) {
-                        self.isOperationing = false
-                    }
-                }
-                __isOperationing = newValue
-            }else{
-                __isOperationing = newValue
-                self.hideControlView()
-            }
-            
-        }
-        get{
-            return __isOperationing
+    fileprivate var isOperationing : Bool = false{
+        didSet{
+            self.setUpHideShowTimer()
         }
     }
     
@@ -523,8 +506,8 @@ extension LYPlayerControllerView{
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
         
         
-//        self.videoSlider.popUpViewCornerRadius = 4.0
-//        self.videoSlider.popUpViewColor = UIColor.orange
+        //        self.videoSlider.popUpViewCornerRadius = 4.0
+        //        self.videoSlider.popUpViewColor = UIColor.orange
         self.videoSlider.popUpViewArrowLength = 8
         self.videoSlider.maximumTrackTintColor = UIColor.clear
         self.videoSlider.minimumTrackTintColor = UIColor.white
@@ -628,7 +611,7 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
             self.imageGenerator?.maximumSize = CGSize.init(width: 100, height: 56)
             let cmTime = CMTime.init(value: CMTimeValue(time), timescale: 1)
             self.imageGenerator?.generateCGImagesAsynchronously(forTimes: [NSValue.init(time: cmTime)], completionHandler: { (requestedTime, im, actualTime, result, error) in
-//                print(result)
+                //                print(result)
                 if result != AVAssetImageGeneratorResult.succeeded{
                     if self.thumbImg != nil{
                         DispatchQueue.main.async {
@@ -650,11 +633,11 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
             let isPlus = (self.sliderValue - slider.value) < 0
             self.sliderValue = slider.value
             self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
-//            if slider.value > self.bottomProgressView.progress{
-//                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
-//            }else if slider.value < self.bottomProgressView.progress{
-//                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
-//            }
+            //            if slider.value > self.bottomProgressView.progress{
+            //                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
+            //            }else if slider.value < self.bottomProgressView.progress{
+            //                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
+            //            }
         }
     }
     
@@ -784,6 +767,8 @@ extension LYPlayerControllerView{
             self.lockBtn.alpha = 0
             self.bottomProgressView.isHidden = false
         }
+        //隐藏后要关闭计时器
+        self.hideTimer?.invalidate()
     }
     
     //显示按钮
@@ -801,10 +786,21 @@ extension LYPlayerControllerView{
             self.topView.alpha = 1
             self.bottomView.alpha = 1
         }
-        //3秒后自动隐藏
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
-            self.hideControlView()
-        }
+        self.setUpHideShowTimer()
+    }
+    
+    //隐藏控制按钮倒计时
+    func setUpHideShowTimer() {
+        self.shouldHide = false
+        self.hideTimer?.invalidate()
+        self.hideTimer = Timer.init(timeInterval: 5.0, repeats: true, block: { (timer) in
+            if self.shouldHide{
+                self.hideControlView()
+            }
+        })
+        RunLoop.main.add(self.hideTimer!, forMode: .defaultRunLoopMode)
+        self.hideTimer?.fire()
+        self.shouldHide = true
     }
     
     //进度控制view,type=true快进，false后退
@@ -817,7 +813,7 @@ extension LYPlayerControllerView{
         }
         self.fastProgressView.progress = Float(dragSec/totalTime)
     }
-
+    
     // 添加播放进度
     func setPlayerSchedule(value:CGFloat, totalTime:CGFloat) {
         self.totalTime = totalTime
