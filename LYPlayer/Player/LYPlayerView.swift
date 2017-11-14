@@ -44,7 +44,7 @@ class LYPlayerView: UIView {
     //当前状态是否被用户暂停
     var isPauseByUser = false{
         didSet{
-//            self.state = isPauseByUser ? .LYPlayerStatePause : .LYPlayerStatePlaying
+            //            self.state = isPauseByUser ? .LYPlayerStatePause : .LYPlayerStatePlaying
         }
     }
     //当前页面消失
@@ -107,7 +107,7 @@ class LYPlayerView: UIView {
                 }
                 
             }else if state == .LYPlayerStateBuffering{
-
+                
             }else if state == .LYPlayerStateFailed{
                 
             }else if state == .LYPlayerStateStopped{
@@ -120,7 +120,7 @@ class LYPlayerView: UIView {
             }else if state == .LYPlayerStateEnd{
                 
             }
-         }
+        }
     }
     
     func setState(_ state : LYPlayerState) {
@@ -129,7 +129,7 @@ class LYPlayerView: UIView {
     
     
     
-
+    
     
     //MARK: 内部调用属性
     fileprivate var seekTime : NSInteger = 0//当前已播放时间
@@ -283,7 +283,7 @@ extension LYPlayerView{
         //添加通知
         self.addNotification()
     }
-
+    
     //清理占用内存的所有，组件和通知
     private func clean() {
         //清理播放组件
@@ -304,7 +304,7 @@ extension LYPlayerView{
         // 移除通知
         NotificationCenter.default.removeObserver(self)
         //结束监听屏幕旋转
-        UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        //        UIDevice.current.endGeneratingDeviceOrientationNotifications()
     }
     
     // 添加播放进度计时器
@@ -363,7 +363,7 @@ extension LYPlayerView{
         self.controlView?.frame = self.bounds
         self.playerLayer?.frame = self.bounds
         self.layer.addSublayer(self.playerLayer!)
-
+        
         //添加手势
         self.createGesture()
         
@@ -375,7 +375,7 @@ extension LYPlayerView{
     //添加通知
     func addNotification() {
         // app退到后台
-        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.appWillResignActive), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         
         // app进入前台
         NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerView.appDidEnterPlayground), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
@@ -399,8 +399,8 @@ extension LYPlayerView{
         print(noti)
         self.state = .LYPlayerStateEnd
     }
-    // app退到后台
-    @objc private func appDidEnterBackground() {
+    // app将退到后台
+    @objc private func appWillResignActive() {
         self.didEnterBackground = true
     }
     
@@ -450,12 +450,12 @@ extension LYPlayerView{
     @objc private func onStatusBarOrientationChange() {
         let orientation = UIApplication.shared.statusBarOrientation
         print(orientation)
-//        self.toOrientation(orientation)
-//        if currentOrientation.isPortrait{
-//
-//        }else{
-//
-//        }
+        //        self.toOrientation(orientation)
+        //        if currentOrientation.isPortrait{
+        //
+        //        }else{
+        //
+        //        }
     }
     
     //改变屏幕
@@ -504,8 +504,8 @@ extension LYPlayerView{
         self.transform = CGAffineTransform.identity
         //旋转视频的方向
         self.transform = self.getTransformRotation()
-//        self.playerLayer?.frame = self.bounds
-//        self.controlView?.frame = self.bounds
+        //        self.playerLayer?.frame = self.bounds
+        //        self.controlView?.frame = self.bounds
         UIView.commitAnimations()
     }
     
@@ -565,33 +565,26 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     
     func ly_playerControllerViewRepeat() {
         //更改播放进度
-//        self.state = .LYPlayerStatePlaying
-//        self.seekToTime(dragedSeconds: 0, completionHandler: nil)
-        self.playerControlView(self.fatherView, self.playerModel)
+        let dragedCMTime = CMTime.init(value: CMTimeValue(0), timescale: 1)
+        self.player?.seek(to: dragedCMTime, toleranceBefore: CMTime.init(value: 1, timescale: 1), toleranceAfter: CMTime.init(value: 1, timescale: 1), completionHandler: { (finish) in
+        })
+        self.player?.play()
+        self.state = .LYPlayerStatePlaying
     }
     
     func ly_playerControllerViewFullScreen(_ isFull: Bool) {
-//        if self.isInCellSubView{
-//            if isFull{
-//                self.toOrientation(.landscapeRight)
-//            }else{
-//                self.toOrientation(.portrait)
-//            }
-//        }else{
-            if isFull{
-                let deviceOrientation = UIDevice.current.orientation
-                if deviceOrientation == .landscapeRight{
-                    self.toOrientation(.landscapeLeft)
-                }else {
-                    self.toOrientation(.landscapeRight)
-                }
-            }else{
-                self.toOrientation(.portrait)
+        if isFull{
+            let deviceOrientation = UIDevice.current.orientation
+            if deviceOrientation == .landscapeRight{
+                self.toOrientation(.landscapeLeft)
+            }else {
+                self.toOrientation(.landscapeRight)
             }
-//        }
-        
+        }else{
+            self.toOrientation(.portrait)
+        }
     }
-
+    
     func ly_playerControllerViewDownload() {
         print("Download")
     }
@@ -655,16 +648,16 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
             self.state = .LYPlayerStatePlaying
         }
     }
-//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        guard let touch = touches.first else{
-//            return
-//        }
-//        if touch.tapCount == 1{
-//            self.singleTapAction()
-//        }else if touch.tapCount == 2{
-//            self.doubleTapAction()
-//        }
-//    }
+    //    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    //        guard let touch = touches.first else{
+    //            return
+    //        }
+    //        if touch.tapCount == 1{
+    //            self.singleTapAction()
+    //        }else if touch.tapCount == 2{
+    //            self.doubleTapAction()
+    //        }
+    //    }
     
     
     
@@ -714,7 +707,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                 
             }
             
-
+            
         default:
             print(pan.state)
         }
@@ -740,7 +733,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
             return
         }
         let totalTime = CGFloat(durationTime.value) / CGFloat(durationTime.timescale)
-
+        
         if self.sumTime > totalTime {
             self.sumTime = totalTime
         }else if self.sumTime < 0{
@@ -834,8 +827,8 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                     self.controlView?.setUpBufferProgressValue(value)
                 }else if keyPath! == "playbackBufferEmpty"{
                     // 当缓冲是空的时候
-//                    print("###############")
-//                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
+                    //                    print("###############")
+                    //                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                     if (self.playerItem?.isPlaybackBufferEmpty)!{
                         self.state = .LYPlayerStateBuffering
                     }
