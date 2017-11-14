@@ -298,15 +298,15 @@ extension LYPlayerControllerView{
         
         self.downLoadBtn.snp.makeConstraints { (make) in
             make.width.equalTo(40)
-            make.height.equalTo(49)
-            make.trailing.equalTo(self.topView.snp.trailing).offset(-10)
+            make.height.equalTo(40)
+            make.trailing.equalTo(self.topView.snp.trailing).offset(-15)
             make.centerY.equalTo(self.backBtn.snp.centerY)
         }
         
         self.resolutionBtn.snp.makeConstraints { (make) in
             make.width.equalTo(40)
             make.height.equalTo(25)
-            make.trailing.equalTo(self.downLoadBtn.snp.leading).offset(-20)
+            make.trailing.equalTo(self.downLoadBtn.snp.leading).offset(-5)
             make.centerY.equalTo(self.backBtn.snp.centerY)
         }
         
@@ -499,8 +499,8 @@ extension LYPlayerControllerView{
         self.videoSlider.addGestureRecognizer(tap)
         
         
-        //设置隐藏项
-        self.downLoadBtn.isHidden = true
+        //MARK: 设置隐藏项
+//        self.downLoadBtn.isHidden = true
         self.resolutionBtn.isHidden = true
         self.resolutionView.isHidden = true
         self.closeBtn.isHidden = true
