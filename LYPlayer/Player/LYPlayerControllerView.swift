@@ -17,7 +17,7 @@ protocol LYPlayerControllerViewDelegate {
     func ly_playerControllerViewRepeat()
     func ly_playerControllerViewFullScreen(_ isFull:Bool)
     func ly_playerControllerViewDownload()
-    func ly_playerControllerViewResolution()
+    func ly_playerControllerViewResolution(_ videoUrl:String)
     func ly_playerControllerViewBack()
     func ly_playerControllerViewClose()
     func ly_playerControllerViewLock(_ isLock:Bool)
@@ -84,6 +84,11 @@ class LYPlayerControllerView: UIView {
         didSet{
             self.titleLabel.text = playerModel.title
             self.placeholderImageView.image = playerModel.placeholderImage
+            
+            //如果有
+            if self.playerModel.resolutionArray.count > 1{
+                self.resetResolutionBtn(self.playerModel.resolutionArray)
+            }
         }
     }
     
@@ -95,8 +100,8 @@ class LYPlayerControllerView: UIView {
             }
         }
     }
-    var imageGenerator : AVAssetImageGenerator?//获取视频某帧的图片
-    var thumbImg : UIImage?//记录slider预览图
+    fileprivate var imageGenerator : AVAssetImageGenerator?//获取视频某帧的图片
+    fileprivate var thumbImg : UIImage?//记录slider预览图
     
     /** 标题 */
     fileprivate var titleLabel = UILabel()
@@ -196,72 +201,13 @@ class LYPlayerControllerView: UIView {
     init() {
         super.init(frame:CGRect.zero)
         
-        self.addSubview(self.placeholderImageView)
-        //        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
-        
-        //系统菊花
-        self.addSubview(self.activityView)
-        self.activityView.backgroundColor = UIColor.RGBSA(s: 0, a: 0.7)
-        self.activity = UIActivityIndicatorView.init(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
-        self.activityView.addSubview(self.activity)
-        
-        self.addSubview(self.topImageView)
-        self.topView.addSubview(self.backBtn)
-        self.topView.addSubview(self.titleLabel)
-        self.topView.addSubview(self.resolutionBtn)
-        self.topView.addSubview(self.downLoadBtn)
-        self.addSubview(self.topView)
-        
-        self.addSubview(self.bottomImageView)
-        self.bottomView.addSubview(self.startBtn)
-        self.bottomView.addSubview(self.currentTimeLabel)
-        self.bottomView.addSubview(self.progressView)
-        self.bottomView.addSubview(self.videoSlider)
-        self.bottomView.addSubview(self.totalTimeLabel)
-        self.bottomView.addSubview(self.fullScreenBtn)
-        self.addSubview(self.bottomView)
-        
-        self.addSubview(self.lockBtn)
-        //        self.addSubview(self.)
-        self.addSubview(self.repeatBtn)
-        self.addSubview(self.playBtn)
-        self.addSubview(failBtn)
-        self.addSubview(self.closeBtn)
-        self.addSubview(self.bottomProgressView)
-        
-        //进度展示
-        self.fastView.addSubview(self.fastImageView)
-        self.fastView.addSubview(self.fastTimeLabel)
-        self.fastView.addSubview(self.fastProgressView)
-        self.addSubview(self.fastView)
-        
-        
-        //设置隐藏项
-        self.downLoadBtn.isHidden = true
-        self.resolutionBtn.isHidden = true
-        self.closeBtn.isHidden = true
-        self.repeatBtn.isHidden = true
-        self.fastView.isHidden = true
-        self.failBtn.isHidden = true
-        self.activityView.isHidden = true
-        self.bottomProgressView.isHidden = true
+        //添加子页面
+        self.setupUI()
         
         //设置约束
         self.makeSubViewsConstraints()
         
-        
-        // 初始化时重置controlView
-        self.playerResetControlView()
-        
-        // app退到后台
-        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerControllerView.appDidEnterBackground), name: Notification.Name.UIApplicationWillResignActive, object: nil)
-        // app进入前台
-        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerControllerView.appDidEnterPlayground), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
-        
-        //监听设备旋转通知
-        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-        NotificationCenter.default.addObserver(self, selector: #selector(LYPlayerControllerView.onDeviceOrientationChange), name: Notification.Name.UIDeviceOrientationDidChange, object: nil)
-        
+        //设置默认数据和属性
         self.setUpDefaultViewAttribute()
     }
     
@@ -277,6 +223,50 @@ class LYPlayerControllerView: UIView {
 }
 
 extension LYPlayerControllerView{
+    //MARK: - 添加子页面
+    func setupUI() {
+        self.addSubview(self.placeholderImageView)
+        //        self.placeholderImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_loading_bgView")
+        
+        //系统菊花
+        self.addSubview(self.activityView)
+        self.activityView.backgroundColor = UIColor.RGBSA(s: 0, a: 0.7)
+        self.activity = UIActivityIndicatorView.init(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        self.activityView.addSubview(self.activity)
+        
+        //顶部
+        self.addSubview(self.topImageView)
+        self.topView.addSubview(self.backBtn)
+        self.topView.addSubview(self.titleLabel)
+        self.topView.addSubview(self.resolutionBtn)
+        self.topView.addSubview(self.downLoadBtn)
+        self.addSubview(self.topView)
+        self.addSubview(self.closeBtn)
+        self.addSubview(self.resolutionView)
+        
+        //底部
+        self.addSubview(self.bottomImageView)
+        self.bottomView.addSubview(self.startBtn)
+        self.bottomView.addSubview(self.currentTimeLabel)
+        self.bottomView.addSubview(self.progressView)
+        self.bottomView.addSubview(self.videoSlider)
+        self.bottomView.addSubview(self.totalTimeLabel)
+        self.bottomView.addSubview(self.fullScreenBtn)
+        self.addSubview(self.bottomView)
+        self.addSubview(self.bottomProgressView)
+        
+        //中部
+        self.addSubview(self.lockBtn)
+        self.addSubview(self.repeatBtn)
+        self.addSubview(self.playBtn)
+        self.addSubview(failBtn)
+        //进度展示
+        self.fastView.addSubview(self.fastImageView)
+        self.fastView.addSubview(self.fastTimeLabel)
+        self.fastView.addSubview(self.fastProgressView)
+        self.addSubview(self.fastView)
+    }
+    
     //MARK: - 约束
     func makeSubViewsConstraints() {
         self.placeholderImageView.snp.makeConstraints { (make) in
@@ -291,24 +281,25 @@ extension LYPlayerControllerView{
         
         self.topView.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(self)
-            make.top.equalTo(self.snp.top).offset(0)
+            make.top.equalTo(self.snp.top).offset(22)
             make.height.equalTo(50)
         }
         
         self.topImageView.snp.makeConstraints { (make) in
-            make.leading.trailing.top.height.equalTo(self.topView)
+            make.leading.trailing.height.equalTo(self.topView)
+            make.top.equalTo(self.topView.snp.top).offset(-22)
         }
         
         self.backBtn.snp.makeConstraints { (make) in
-            make.leading.equalTo(self.topImageView.snp.leading).offset(10)
-            make.top.equalTo(self.topImageView.snp.top).offset(3)
+            make.leading.equalTo(self.topView.snp.leading).offset(10)
+            make.top.equalTo(self.topView.snp.top).offset(3)
             make.width.height.equalTo(40)
         }
         
         self.downLoadBtn.snp.makeConstraints { (make) in
             make.width.equalTo(40)
             make.height.equalTo(49)
-            make.trailing.equalTo(self.topImageView.snp.trailing).offset(-10)
+            make.trailing.equalTo(self.topView.snp.trailing).offset(-10)
             make.centerY.equalTo(self.backBtn.snp.centerY)
         }
         
@@ -331,14 +322,12 @@ extension LYPlayerControllerView{
         }
         
         self.bottomImageView.snp.makeConstraints { (make) in
-            //            make.leading.trailing.bottom.equalTo(0)
-            //            make.height.equalTo(50)
             make.leading.trailing.bottom.height.equalTo(self.bottomView)
         }
         
         self.startBtn.snp.makeConstraints { (make) in
-            make.leading.equalTo(self.bottomImageView.snp.leading).offset(5)
-            make.bottom.equalTo(self.bottomImageView.snp.bottom).offset(-5)
+            make.leading.equalTo(self.bottomView.snp.leading).offset(5)
+            make.bottom.equalTo(self.bottomView.snp.bottom).offset(-5)
             make.width.equalTo(30)
         }
         
@@ -349,7 +338,7 @@ extension LYPlayerControllerView{
         }
         
         self.fullScreenBtn.snp.makeConstraints { (make) in
-            make.trailing.equalTo(self.bottomImageView.snp.trailing).offset(-5)
+            make.trailing.equalTo(self.bottomView.snp.trailing).offset(-5)
             make.width.equalTo(30)
             make.centerY.equalTo(self.startBtn.snp.centerY)
         }
@@ -389,8 +378,6 @@ extension LYPlayerControllerView{
             make.center.equalTo(self)
             make.width.height.equalTo(50)
         }
-        
-        //        self
         
         self.failBtn.snp.makeConstraints { (make) in
             make.center.equalTo(self)
@@ -434,28 +421,14 @@ extension LYPlayerControllerView{
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        let currentOrientation = UIApplication.shared.statusBarOrientation
-        if currentOrientation.isPortrait{
-            self.setOrientationPortraitConstraint()
-        }else{
-            self.setOrientationLandscapeConstraint()
-        }
-    }
-    
-    //MARK: - 重置页面数据
-    func playerResetControlView() {
-        
-    }
-    
+    //MARK: - 设置默认数据和属性
     func setUpDefaultViewAttribute() {
         self.titleLabel.textColor = UIColor.white
         self.titleLabel.font = UIFont.systemFont(ofSize: 14.0)
         self.backBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_back_full"), for: .normal)
         self.downLoadBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_download"), for: .normal)
-        self.resolutionBtn.setTitle("|高清|", for: .normal)
+        self.resolutionBtn.setTitle("标清", for: .normal)
+        self.resolutionBtn.titleLabel?.font = UIFont.systemFont(ofSize: 12.0)
         self.topImageView.image = UIImage(named: "LYPlayer.bundle/LYPlayer_top_shadow")
         
         self.startBtn.setImage(UIImage(named: "LYPlayer.bundle/LYPlayer_play"), for: .normal)
@@ -505,9 +478,7 @@ extension LYPlayerControllerView{
         self.downLoadBtn.addTarget(self, action: #selector(LYPlayerControllerView.downloadBtnAction), for: .touchUpInside)
         self.backBtn.addTarget(self, action: #selector(LYPlayerControllerView.backBtnAction), for: .touchUpInside)
         
-        
-        //        self.videoSlider.popUpViewCornerRadius = 4.0
-        //        self.videoSlider.popUpViewColor = UIColor.orange
+
         self.videoSlider.popUpViewArrowLength = 8
         self.videoSlider.maximumTrackTintColor = UIColor.clear
         self.videoSlider.minimumTrackTintColor = UIColor.white
@@ -527,62 +498,73 @@ extension LYPlayerControllerView{
         tap.numberOfTapsRequired = 1
         self.videoSlider.addGestureRecognizer(tap)
         
+        
+        //设置隐藏项
+        self.downLoadBtn.isHidden = true
+        self.resolutionBtn.isHidden = true
+        self.resolutionView.isHidden = true
+        self.closeBtn.isHidden = true
+        self.repeatBtn.isHidden = true
+        self.fastView.isHidden = true
+        self.failBtn.isHidden = true
+        self.activityView.isHidden = true
+        self.bottomProgressView.isHidden = true
+        
+        
         self.showControlView()
     }
     
-    //app进入后台
-    @objc func appDidEnterBackground() {
-        
-    }
-    //app进入前台
-    @objc func appDidEnterPlayground() {
-        
-    }
-    //屏幕旋转
-    @objc func onDeviceOrientationChange() {
+    
+    
+    //MARK: - 重置页面数据
+    func playerResetControlView() {
         
     }
     
-    //设置竖屏约束
-    func setOrientationPortraitConstraint() {
-        
-    }
-    
-    //设置横屏约束
-    func setOrientationLandscapeConstraint() {
-        
-    }
-    
-    //点击切换分别率按钮
-    func changeResolution(sender:UIButton) {
-        sender.isSelected = true
-        if sender.isSelected{
-            sender.backgroundColor = UIColor.RGB(r: 86, g: 143, b: 232)
-        }else{
-            sender.backgroundColor = UIColor.clear
+    //MARK: - 重置切换清晰度按钮
+    func resetResolutionBtn(_ resolutios : Array<Dictionary<String,String>>) {
+        self.resolutionBtn.isHidden = false
+        self.resolutionView.snp.makeConstraints { (make) in
+            make.top.equalTo(self.resolutionBtn.snp.bottom)
+            make.width.equalTo(self.resolutionBtn.snp.width)
+            make.leading.equalTo(self.resolutionBtn.snp.leading)
         }
-        self.resoultionCurrentBtn.isSelected = false
-        self.resoultionCurrentBtn.backgroundColor = UIColor.clear
-        self.resoultionCurrentBtn = sender
-        //隐藏分辨率View
-        self.resolutionView.isHidden = true
-        //分辨率Btn改为normal状态
-        self.resolutionBtn.isSelected = false
-        // topImageView上的按钮的文字
-        self.resolutionBtn.setTitle(sender.titleLabel?.text, for: .normal)
-        /**
-         
-         */
-        //   _
-        //  | |      /\   /\
-        //  | |      \ \_/ /
-        //  | |       \_~_/
-        //  | |        / \
-        //  | |__/\    [ ]
-        //  |_|__,/    \_/
-        //
+        
+        for view in self.resolutionView.subviews {
+            view.removeFromSuperview()
+        }
+        for i in 0 ... resolutios.count - 1{
+            let dict = resolutios[i]
+            guard let key = dict.keys.first else{
+                continue
+            }
+            guard let _ = dict.values.first else{
+                continue
+            }
+            
+            let btn = UIButton()
+            btn.titleLabel?.textColor = UIColor.white
+            btn.setTitle(key, for: .normal)
+            btn.titleLabel?.font = UIFont.systemFont(ofSize: 12.0)
+            btn.tag = i
+            btn.addTarget(self, action: #selector(LYPlayerControllerView.changeResolution(sender:)), for: .touchUpInside)
+            self.resolutionView.addSubview(btn)
+            btn.snp.makeConstraints({ (make) in
+                make.leading.trailing.equalTo(0)
+                make.top.equalTo(30 * self.resolutionView.subviews.count - 30)
+                make.height.equalTo(30)
+            })
+        }
+        
+        self.resolutionView.snp.makeConstraints { (make) in
+            make.height.equalTo(30 * self.resolutionView.subviews.count)
+        }
+        self.resolutionView.backgroundColor = UIColor.RGBSA(s: 0, a: 0.4)
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
     
 }
 
@@ -611,7 +593,6 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
             self.imageGenerator?.maximumSize = CGSize.init(width: 100, height: 56)
             let cmTime = CMTime.init(value: CMTimeValue(time), timescale: 1)
             self.imageGenerator?.generateCGImagesAsynchronously(forTimes: [NSValue.init(time: cmTime)], completionHandler: { (requestedTime, im, actualTime, result, error) in
-                //                print(result)
                 if result != AVAssetImageGeneratorResult.succeeded{
                     if self.thumbImg != nil{
                         DispatchQueue.main.async {
@@ -633,11 +614,6 @@ extension LYPlayerControllerView : UIGestureRecognizerDelegate{
             let isPlus = (self.sliderValue - slider.value) < 0
             self.sliderValue = slider.value
             self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
-            //            if slider.value > self.bottomProgressView.progress{
-            //                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
-            //            }else if slider.value < self.bottomProgressView.progress{
-            //                self.changeDragSections(dragSec: time, totalTime: totalTime, type: isPlus)
-            //            }
         }
     }
     
@@ -708,7 +684,6 @@ extension LYPlayerControllerView{
                 }
             }
         }
-        
     }
     //右下角的全屏按钮事件
     @objc func fullScreenBtnAction() {
@@ -735,9 +710,7 @@ extension LYPlayerControllerView{
     //右上角切换清晰度
     @objc func resolutionBtnAction() {
         self.isOperationing = true
-        if self.delegate != nil{
-            self.delegate?.ly_playerControllerViewResolution()
-        }
+        self.resolutionView.isHidden = false
     }
     //右上角下载
     @objc func downloadBtnAction() {
@@ -747,6 +720,23 @@ extension LYPlayerControllerView{
         }
     }
     
+    //点击切换分别率按钮
+    @objc func changeResolution(sender:UIButton) {
+        if self.playerModel.resolutionArray.count > sender.tag{
+            let dict = self.playerModel.resolutionArray[sender.tag]
+            guard let key = dict.keys.first else{
+                return
+            }
+            guard let value = dict.values.first else{
+                return
+            }
+            self.resolutionBtn.setTitle(key, for: .normal)
+            if self.delegate != nil{
+                self.delegate?.ly_playerControllerViewResolution(value)
+            }
+        }
+        self.resolutionView.isHidden = true
+    }
 }
 
 
@@ -757,7 +747,10 @@ extension LYPlayerControllerView{
     //设置隐藏
     func hideControlView() {
         //已隐藏
-        if !self.isShow || self.isOperationing || self.dragged{
+//        if !self.isShow || self.isOperationing || self.dragged{
+//            return
+//        }
+        if !self.isShow || self.dragged{
             return
         }
         self.isShow = !self.isShow
@@ -766,6 +759,7 @@ extension LYPlayerControllerView{
             self.bottomView.alpha = 0
             self.lockBtn.alpha = 0
             self.bottomProgressView.isHidden = false
+            self.resolutionView.isHidden = true
         }
         //隐藏后要关闭计时器
         self.hideTimer?.invalidate()

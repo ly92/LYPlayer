@@ -25,10 +25,10 @@ class LYPlayerModel: NSObject {
      */
     var placeholderImageURLString = ""
     /**
-     * 视频分辨率字典, 分辨率标题与该分辨率对应的视频URL.
-     * 例如: @{@"高清" : @"https://xx/xx-hd.mp4", @"标清" : @"https://xx/xx-sd.mp4"}
+     * 视频分辨率数组, 分辨率标题与该分辨率对应的视频URL.
+     * 例如: 【{"高清" : "https://xx/xx-hd.mp4"}, {"标清" : "https://xx/xx-sd.mp4"}】
      */
-    var resolutionDic = Dictionary<String,String>()
+    var resolutionArray = Array<Dictionary<String,String>>()
     /** 从xx秒开始播放视频(默认0) */
     var seekTime : NSInteger = 0
     // cell播放视频，以下属性必须设置值

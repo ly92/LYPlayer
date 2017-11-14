@@ -529,6 +529,7 @@ extension LYPlayerView{
 
 //MARK: - 播放进度以及播放状态
 extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDelegate{
+    
     //MARK: 控制层代理方法
     func ly_playerControllerViewLock(_ isLock: Bool) {
         self.isLocked = isLock
@@ -550,7 +551,6 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         let totalTime = CGFloat(durationTime.value) / CGFloat(durationTime.timescale)
         //更改播放进度
         self.seekToTime(dragedSeconds: totalTime * value, completionHandler: nil)
-        
     }
     
     
@@ -596,9 +596,15 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         print("Download")
     }
     
-    func ly_playerControllerViewResolution() {
-        print("Resolution")
+    func ly_playerControllerViewResolution(_ videoUrl: String) {
+        if videoUrl == self.videoUrl{return}
+        self.videoUrl = videoUrl
+        let currentTime = NSInteger(self.player?.currentTime().seconds ?? 0)
+        self.clean()
+        self.setUpSuperView()
+        self.seekTime = currentTime
     }
+    
     
     func ly_playerControllerViewBack() {
         self.stopPlay()
@@ -811,9 +817,9 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                         pan.cancelsTouchesInView = true
                         self.addGestureRecognizer(pan)
                         
-                        //                        if self.seekTime{
-                        //                            self
-                        //                        }
+                        if self.seekTime > 0 && NSInteger((self.playerItem?.duration.seconds)!) > self.seekTime{
+                            self.seekToTime(dragedSeconds: CGFloat(self.seekTime), completionHandler: nil)
+                        }
                         self.player?.isMuted = self.mute
                     }else if self.player?.currentItem?.status == .failed{
                         self.state = .LYPlayerStateFailed

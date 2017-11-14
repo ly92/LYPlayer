@@ -62,6 +62,7 @@ class MoviePlayerViewController: UIViewController {
     func testPlay() {
         let playerModel = LYPlayerModel()
         playerModel.videoURL = self.url
+        playerModel.resolutionArray = [["高清":"http://baobab.wdjcdn.com/14571455324031.mp4"],["标清":"http://baobab.wdjcdn.com/1457521866561_5888_854x480.mp4"]]
 //        LYPlayerView.shared.isAutoPlay = false
         LYPlayerView.shared.playerControlView(self.subView, playerModel)
     }
