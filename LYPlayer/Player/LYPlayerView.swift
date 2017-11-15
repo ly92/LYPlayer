@@ -146,6 +146,7 @@ class LYPlayerView: UIView {
     fileprivate var timeObserver : Any?//检测播放进度
     fileprivate var fatherView = UIView()//父级视图
     fileprivate var isInCellSubView = false//是否存在于cell中
+    fileprivate let kDownloadScheme = "lyPlayerScheme"//系统不能识别的scheme
     //是否拖拽中
     fileprivate var isDraging = false{
         didSet{
@@ -586,7 +587,9 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
     
     func ly_playerControllerViewDownload() {
-        print("Download")
+        let components = NSURLComponents.init(url: URL(string:self.videoUrl)!, resolvingAgainstBaseURL: false)
+        components?.scheme = "lyPlayer"//注意，不加这一句不能执行到回调操作
+        self.urlAsset?.resourceLoader.setDelegate(self, queue: DispatchQueue.main)
     }
     
     func ly_playerControllerViewResolution(_ videoUrl: String) {
@@ -869,3 +872,22 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     }
 }
 
+//MARK: - 缓存视频
+extension LYPlayerView : AVAssetResourceLoaderDelegate{
+    func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
+        //获取系统中不能处理的URL
+        guard let resourceUrl = loadingRequest.request.url else{
+            return false
+        }
+        //判断这个URL是否遵守URL规范和其是否是我们所设定的URL
+        if resourceUrl.scheme == kDownloadScheme{
+            //判断当前的URL网络请求是否已经被加载过了，如果缓存中里面有URL对应的网络加载器(自己封装，也可以直接使用NSURLRequest)，则取出来添加请求，每一个URL对应一个网络加载器，loader的实现接下来会说明
+//            let loader =
+            return true
+        }else{
+            return false
+        }
+    }
+    
+   
+}
