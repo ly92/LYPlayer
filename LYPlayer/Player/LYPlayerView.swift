@@ -143,6 +143,7 @@ class LYPlayerView: UIView {
     fileprivate var panDirection : LYPanDirection = .LYPanDirectionHorizontal//手势方向
     fileprivate var isVolume = true//true表示调声音，false表示调亮度
     fileprivate var volumeViewSlider : UISlider?//声音
+    fileprivate var isBuffering = false//是否正在缓存中
     fileprivate var timeObserver : Any?//检测播放进度
     fileprivate var fatherView = UIView()//父级视图
     fileprivate var isInCellSubView = false//是否存在于cell中
@@ -735,6 +736,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
         guard let durationTime = self.playerItem?.duration else {
             return
         }
+        if durationTime.timescale == 0{return}
         let totalTime = CGFloat(durationTime.value) / CGFloat(durationTime.timescale)
         
         if self.sumTime > totalTime {
@@ -833,8 +835,9 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
                     //                    print("###############")
                     //                    print(self.player?.currentItem?.currentTime() ?? "self.player?.currentItem?.currentTime()")
                     if (self.playerItem?.isPlaybackBufferEmpty)!{
-                        self.state = .LYPlayerStateBuffering
+                        self.bufferingSomeSecond()
                     }
+                    
                 }else if keyPath! == "playbackLikelyToKeepUp"{
                     // 当缓冲好的时候
                     if self.playerItem!.isPlaybackLikelyToKeepUp && self.state != .LYPlayerStatePlaying && self.state != .LYPlayerStatePause{
@@ -866,8 +869,32 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     
     //缓冲较差时候
     func bufferingSomeSecond() {
+        print("-------------------------1")
         self.state = .LYPlayerStateBuffering
         // playbackBufferEmpty会反复进入，因此在bufferingSomeSecond延时播放执行完之前再调用bufferingSomeSecond都忽略
+        if self.isBuffering{
+            return
+        }
+        print("-------------------------2")
+        self.isBuffering = true
+        // 需要先暂停一小会之后再播放，否则网络状况不好的时候时间在走，声音播放不出来
+        self.player?.pause()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2) {
+            print("-------------------------3")
+            // 如果此时用户已经暂停了，则不再需要开启播放了
+            if self.isPauseByUser{
+                self.isBuffering = false
+                return
+            }
+            
+            self.player?.play()
+            // 如果执行了play还是没有播放则说明还没有缓存好，则再次缓存一段时间
+            self.isBuffering = false
+            if self.playerItem == nil{return}
+            if self.playerItem!.isPlaybackLikelyToKeepUp{
+                self.bufferingSomeSecond()
+            }
+        }
         
     }
 }
