@@ -254,8 +254,8 @@ extension LYValuePopUpView : CAAnimationDelegate{
         let tip = CGPoint.init(x: arrowTipX, y: rect2.maxY)
         let x = self.arrowLength
         arrowPath.move(to: tip)
-        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX - x) > 0 ? arrowTipX - x : 0, y: roundedRect.maxY))
-        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX + x) > roundedRect.maxX ? roundedRect.maxX : arrowTipX + x, y: roundedRect.maxY))
+        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX - x - self.cornerRadius) > 0 ? arrowTipX - x : self.cornerRadius, y: roundedRect.maxY))
+        arrowPath.addLine(to: CGPoint.init(x: (arrowTipX + x + self.cornerRadius) > roundedRect.maxX ? roundedRect.maxX - self.cornerRadius : arrowTipX + x, y: roundedRect.maxY))
         arrowPath.close()
         popUpPath.append(arrowPath)
         

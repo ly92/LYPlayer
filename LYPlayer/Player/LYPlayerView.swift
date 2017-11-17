@@ -869,6 +869,7 @@ extension LYPlayerView : UIGestureRecognizerDelegate, LYPlayerControllerViewDele
     
     //缓冲较差时候
     func bufferingSomeSecond() {
+        if self.state == .LYPlayerStateEnd {return}
         print("-------------------------1")
         self.state = .LYPlayerStateBuffering
         // playbackBufferEmpty会反复进入，因此在bufferingSomeSecond延时播放执行完之前再调用bufferingSomeSecond都忽略
