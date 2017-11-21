@@ -269,6 +269,7 @@ extension LYPlayerView{
         self.backgroundColor = UIColor.red
         self.alpha = 0.8
         self.urlAsset = AVURLAsset.init(url: URL(string:self.videoUrl)!)
+//        self.urlAsset = AVURLAsset.init(url: URL.init(fileURLWithPath: "/Users/ly/Library/Developer/CoreSimulator/Devices/F74FC8DA-0C29-4D46-896C-2AFEA35A2272/data/Containers/Data/Application/0C549169-EC14-43E8-924B-D2A87E098A74/Library/Caches/566052304.mp4"))
         // 初始化playerItem
         self.playerItem = AVPlayerItem.init(asset: self.urlAsset!)
         // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
