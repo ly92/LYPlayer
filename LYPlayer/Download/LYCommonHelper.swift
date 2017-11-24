@@ -10,42 +10,42 @@ import UIKit
 
 class LYCommonHelper: NSObject {
     // 下载文件的总文件夹
-    let BASE = "ZFDownLoad"
+    static let BASE = "ZFDownLoad"
     // 完整文件路径
-    let TARGET = "CacheList"
+    static let TARGET = "CacheList"
     // 临时文件夹名称
-    let TEMP = "Temp"
+    static let TEMP = "Temp"
     // 缓存主目录
-    let CACHES_DIRECTORY = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).last!
+    static let CACHES_DIRECTORY = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).last!
     // 临时文件夹的路径
-    var TEMP_FOLDER : String {
+    class var TEMP_FOLDER : String {
         get{
             return CACHES_DIRECTORY + BASE + TEMP
         }
     }
     // 临时文件的路径
-    func TEMP_PATH(name : String) -> String {
-        return self.createFolder(filePath: TEMP_FOLDER) + name
+    class func TEMP_PATH(_ name : String) -> String {
+        return self.createFolder(TEMP_FOLDER) + name
     }
     
     // 下载文件夹路径
-    var FILE_FOLDER : String{
+    class var FILE_FOLDER : String{
         get{
             return CACHES_DIRECTORY + BASE + TARGET
         }
     }
     // 下载文件的路径
-    func FILE_PATH(name : String) -> String {
-        return self.createFolder(filePath: FILE_FOLDER) + name
+    class func FILE_PATH(_ name : String) -> String {
+        return self.createFolder(FILE_FOLDER) + name
     }
     
     // 文件信息的Plist路径
-    var PLIST_PATH : String {
+    class var PLIST_PATH : String {
         return CACHES_DIRECTORY + BASE
     }
 
     //创建文件夹
-    func createFolder(filePath : String) -> String {
+    class func createFolder(_ filePath : String) -> String {
         let fm = FileManager.default
         if !fm.fileExists(atPath: filePath){
             do{
@@ -59,7 +59,7 @@ class LYCommonHelper: NSObject {
     }
     
     /** 将文件大小转化成M单位或者B单位 */
-    func getFileSizeString(size : String) -> String {
+    class func getFileSizeString(_ size : String) -> String {
         if size.floatValue >= 1024 * 1024{
             //大于1M，则转化成M单位的字符串
             return String.init(format: "%.2fM", size.floatValue/1024.0/1024.0)
@@ -78,7 +78,7 @@ class LYCommonHelper: NSObject {
 //    }
     
     /** 字符串格式化成日期 */
-    class func makeDate(birthday : String) -> Date{
+    class func makeDate(_ birthday : String) -> Date{
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd HH:mm:ss"
         guard let date = df.date(from: birthday)else{
@@ -88,7 +88,7 @@ class LYCommonHelper: NSObject {
     }
 
     /** 日期格式化成字符串 */
-    class func dateToString(date : Date) -> String{
+    class func dateToString(_ date : Date) -> String{
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let dateStr = df.string(from: date)
@@ -96,7 +96,7 @@ class LYCommonHelper: NSObject {
     }
 
     /** 检查文件名是否存在 */
-    class func isExistFile(fileName : String) -> Bool {
+    class func isExistFile(_ fileName : String) -> Bool {
         let fileManager = FileManager.default
         return fileManager.fileExists(atPath: fileName)
     }

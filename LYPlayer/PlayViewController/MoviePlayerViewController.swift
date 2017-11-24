@@ -19,7 +19,7 @@ class MoviePlayerViewController: UIViewController {
 
         print(self.url)
         
-//        self.testPlay()
+        self.testPlay()
         
 //        self.subView.frame = CGRect.init(x: 0, y: 88, width: KScreenWidth, height: 300)
         self.subView.backgroundColor = UIColor.purple
@@ -61,14 +61,14 @@ class MoviePlayerViewController: UIViewController {
     
     func testPlay() {
         // /Users/ly/Library/Developer/CoreSimulator/Devices/F74FC8DA-0C29-4D46-896C-2AFEA35A2272/data/Containers/Data/Application/AACACB27-140E-409C-8E72-6130F551BD41/Library/Caches566353844.mp4
-        let _ = LYHttpRequest.init(url: URL.init(string: self.url)!)
-
-        return
+//        let _ = LYHttpRequest.init(url: URL.init(string: self.url)!)
+//
+//        return
         let playerModel = LYPlayerModel()
-//        playerModel.videoURL = self.url
+        playerModel.videoURL = self.url
         
         
-        playerModel.videoURL = "/Users/ly/Library/Developer/CoreSimulator/Devices/F74FC8DA-0C29-4D46-896C-2AFEA35A2272/data/Containers/Data/Application/0C549169-EC14-43E8-924B-D2A87E098A74/Library/Caches/566052304.mp4"
+//        playerModel.videoURL = "/Users/ly/Library/Developer/CoreSimulator/Devices/F74FC8DA-0C29-4D46-896C-2AFEA35A2272/data/Containers/Data/Application/0C549169-EC14-43E8-924B-D2A87E098A74/Library/Caches/566052304.mp4"
         playerModel.resolutionArray = [["高清":"http://baobab.wdjcdn.com/14571455324031.mp4"],["标清":"http://baobab.wdjcdn.com/1457521866561_5888_854x480.mp4"]]
 //        LYPlayerView.shared.isAutoPlay = false
         LYPlayerView.shared.playerControlView(self.subView, playerModel)

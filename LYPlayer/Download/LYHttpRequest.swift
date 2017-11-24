@@ -58,18 +58,18 @@ class LYHttpRequest: NSObject {
         
     }
     
-    func startAsynchronous() {
-//       self.task.resume()
-    }
-    
-    func isFinished() -> Bool {
-        
-        return false
-    }
-    
-    func isExecuting() -> Bool {
-        return false
-    }
+//    func startAsynchronous() {
+////       self.task.resume()
+//    }
+//
+//    func isFinished() -> Bool {
+//
+//        return self.task.progress.isFinished
+//    }
+//
+//    func isExecuting() -> Bool {
+//
+//    }
     
     func cancel() {
         self.task.cancel()
