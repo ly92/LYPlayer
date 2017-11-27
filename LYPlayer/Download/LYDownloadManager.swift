@@ -546,7 +546,7 @@ extension LYDownloadManager : LYHttpRequestDelegate{
         if seconds > 0 {remainingTimeStr += String.init(format: "%zd秒", seconds)}
         
         //下载进度
-        let progress = Float(receiveSize) / Float(expectedSize)
+//        let progress = Float(receiveSize) / Float(expectedSize)
         
         file.remainingTime = remainingTimeStr
         
