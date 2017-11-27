@@ -10,11 +10,11 @@ import UIKit
 
 class LYCommonHelper: NSObject {
     // 下载文件的总文件夹
-    static let BASE = "ZFDownLoad"
+    static let BASE = "/LYDownLoad"
     // 完整文件路径
-    static let TARGET = "CacheList"
+    static let TARGET = "/CacheList"
     // 临时文件夹名称
-    static let TEMP = "Temp"
+    static let TEMP = "/Temp"
     // 缓存主目录
     static let CACHES_DIRECTORY = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).last!
     // 临时文件夹的路径
@@ -41,7 +41,7 @@ class LYCommonHelper: NSObject {
     
     // 文件信息的Plist路径
     class var PLIST_PATH : String {
-        return CACHES_DIRECTORY + BASE
+        return CACHES_DIRECTORY + BASE + "/FinishedPlist.plist"
     }
 
     //创建文件夹
@@ -55,7 +55,7 @@ class LYCommonHelper: NSObject {
                 print(error)
             }
         }
-        return filePath
+        return filePath + "/"
     }
     
     /** 将文件大小转化成M单位或者B单位 */

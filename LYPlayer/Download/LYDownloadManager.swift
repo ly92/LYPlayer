@@ -16,7 +16,7 @@ protocol LYDownloadDelegate {
 }
 
 let kMaxRequestCount = "kMaxRequestCount"
-
+let shareMgr = LYDownloadManager()/** 单例 */
 
 class LYDownloadManager: NSObject {
     /** 获得下载事件的vc，用在比如多选图片后批量下载的情况，这时需配合 allowNextRequest 协议方法使用 */
@@ -26,7 +26,9 @@ class LYDownloadManager: NSObject {
     /** 设置最大的并发下载个数 */
     var maxCount : NSInteger = 3{
         didSet{
-            
+            UserDefaults.standard.set((maxCount), forKey: kMaxRequestCount)
+            UserDefaults.standard.synchronize()
+            LYDownloadManager.share().startLoad()
         }
     }
     /** 本地临时文件夹文件的个数 */
@@ -42,8 +44,7 @@ class LYDownloadManager: NSObject {
     
     
     /** 单例 */
-    let shareMgr = LYDownloadManager()
-    func share() -> LYDownloadManager {
+    class func share() -> LYDownloadManager {
         return shareMgr
     }
     
@@ -57,8 +58,8 @@ class LYDownloadManager: NSObject {
         }
         userDefaults.synchronize()
         self.maxCount = (max as! String).intValue
-        
-        
+        self.loadFinishedfiles()
+        self.loadTempfiles()
     }
     
     
@@ -199,17 +200,69 @@ extension LYDownloadManager{
         }
         self.startLoad()
     }
+    
+    //MARK: 已完成的下载任务在这里处理
+    /*
+     将本地已经下载完成的文件加载到已下载列表里
+     */
+    func loadFinishedfiles() {
+        if FileManager.default.fileExists(atPath: LYCommonHelper.PLIST_PATH){
+            let finishArr = NSMutableArray.init(contentsOfFile: LYCommonHelper.PLIST_PATH) ?? NSMutableArray()
+            for dic in finishArr{
+                let file = LYFileModel()
+                let dict = dic as! NSDictionary
+                file.fileName = dict["filename"] as! String
+                file.fileType = (file.fileName as NSString).pathExtension
+                file.fileSize = dict["filesize"] as! String
+                file.time = dict["time"] as! String
+                let imageData = dict["fileimage"]
+                if imageData != nil{
+                    file.fileImage = UIImage.init(data: imageData as! Data)
+                }else{
+                    file.fileImage = nil
+                }
+                self.finishedList.append(file)
+            }
+        }
+    }
+    
     /**
      * 保存下载完成的文件信息到plist
      */
     func saveFinishedFile() {
-        
+        if self.finishedList.count == 0{return}
+        let finishedInfo = NSMutableArray()
+        for file in self.finishedList{
+            var fileDic : Dictionary<String,Any> = Dictionary<String,Any>()
+            fileDic["filename"] = file.fileName
+            fileDic["time"] = file.time
+            fileDic["filesize"] = file.fileSize
+            if file.fileImage != nil{
+                let imageData = UIImagePNGRepresentation(file.fileImage!)
+                if imageData != nil{
+                    fileDic["fileimage"] = imageData!
+                }
+            }
+            let dict = NSDictionary.init(dictionary: fileDic)
+            finishedInfo.add(dict)
+        }
+        if !finishedInfo.write(toFile: LYCommonHelper.PLIST_PATH, atomically: true){
+            print("------------------write plist fail-----------------")
+        }
     }
     /**
      * 删除某一个下载完成的文件
      */
     func deleteFinishFile(file : LYFileModel) {
-        
+        let index = self.finishedList.index(of: file)
+        if index != nil{
+            self.finishedList.remove(at: index!)
+        }
+        let path = LYCommonHelper.FILE_PATH(file.fileName)
+        if FileManager.default.fileExists(atPath: path){
+            try! FileManager.default.removeItem(atPath: path)
+        }
+        self.saveFinishedFile()
     }
     /**
      * 下载视频时候调用
@@ -220,6 +273,7 @@ extension LYDownloadManager{
         self.fileInfo.fileUrl = url
         if name == nil{name = (self.fileInfo.fileUrl as NSString).lastPathComponent}
         if name == nil{return}
+        self.fileInfo.fileName = name!
         self.fileInfo.time = LYCommonHelper.dateToString(Date())
         self.fileInfo.fileType = (self.fileInfo.fileUrl as NSString).pathExtension
         self.fileInfo.fileImage = image
@@ -452,19 +506,97 @@ extension LYDownloadManager{
 
 extension LYDownloadManager : LYHttpRequestDelegate{
     func requestStarted(request: LYHttpRequest, response: URLResponse) {
-        
+        print("开始了!,收到回复了！")
+        let file = request.userInfo["File"] as! LYFileModel
+        file.isFirstReceived = true
+        let len = response.expectedContentLength
+        // 这个信息头，首次收到的为总大小，那么后来续传时收到的大小为肯定小于或等于首次的值，则忽略
+        file.fileSize = String.init(format: "%lld", len)
+        self.saveDownloadFile(fileInfo: file)
     }
     
     func request(request: LYHttpRequest, didReceiveData data: Data) {
+        let file = request.userInfo["File"] as! LYFileModel
+        if file.isFirstReceived{
+            file.isFirstReceived = false
+            file.fileReceivedSize = String.init(format: "%lld", data.count)
+        }else{
+            file.fileReceivedSize = String.init(format: "%lld", file.fileReceivedSize.intValue + data.count)
+        }
+        let receiveSize = file.fileReceivedSize.intValue
+        let expectedSize = file.fileSize.intValue
+        // 每秒下载速度
+        let downloadTime = -1 * file.startTime.timeIntervalSinceNow
+        let speed = Float(receiveSize) / Float(downloadTime)
+        if speed == 0{return}
+        let speedSec = LYCommonHelper.calculateFileSizeInUnit(contentLength: CLongLong(speed))
+        let unit = LYCommonHelper.calculateUnit(contentLength: CLongLong(speed))
+        let speedStr = String.init(format: "%.2f", speedSec) + unit + "/s"
+        file.speed = speedStr
         
+        // 剩余下载时间
+        var remainingTimeStr = ""
+        let remainingContentLength = expectedSize - receiveSize
+        let remainingTime = Int(Float(remainingContentLength) / speed)
+        let hours = remainingTime / 3600
+        let minutes = remainingTime % 3600 / 60
+        let seconds = remainingTime % (3600*60)
+        if hours > 0 {remainingTimeStr += String.init(format: "%zd小时", hours)}
+        if minutes > 0 {remainingTimeStr += String.init(format: "%zd分", minutes)}
+        if seconds > 0 {remainingTimeStr += String.init(format: "%zd秒", seconds)}
+        
+        //下载进度
+        let progress = Float(receiveSize) / Float(expectedSize)
+        
+        file.remainingTime = remainingTimeStr
+        
+        self.saveDownloadFile(fileInfo: file)
+        
+        
+        if self.downloadDelegate != nil{
+            self.downloadDelegate?.updateCellProgress(request: request)
+        }
     }
-    
+    // 将正在下载的文件请求ASIHttpRequest从队列里移除，并将其配置文件删除掉,然后向已下载列表里添加该文件对象
     func requestFinished(request: LYHttpRequest) {
+        print("下载完成")
+        let file = request.userInfo["File"] as! LYFileModel
+        self.finishedList.append(file)
+        let configPath = fileInfo.tempPath + ".plist"
+        if FileManager.default.fileExists(atPath: configPath){
+            try! FileManager.default.removeItem(atPath: configPath)
+        }
+        let index = self.fileList.index(of: file)
+        if index != nil{
+            self.fileList.remove(at: index!)
+        }
+        let index2 = self.downloadingList.index(of: request)
+        if index2 != nil{
+            self.downloadingList.remove(at: index2!)
+        }
+        self.saveFinishedFile()
+        self.startLoad()
         
+        self.downloadDelegate?.finishDownload(request: request)
     }
     
     func requestFailed(request: LYHttpRequest) {
-        
+        // 出错了，如果是等待超时，则继续下载
+        if request.error != nil{
+            let error = request.error!
+            print(error)
+            request.cancel()
+            let file = request.userInfo["File"] as! LYFileModel
+            file.downloadState = .LY_StopDownload
+            file.error = error
+            for file2 in self.fileList{
+                if file2.fileName == file.fileName{
+                    file2.downloadState = .LY_StopDownload
+                    file2.error = error
+                }
+            }
+            self.downloadDelegate?.updateCellProgress(request: request)
+        }
     }
     
     

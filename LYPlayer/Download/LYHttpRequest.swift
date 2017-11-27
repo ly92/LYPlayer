@@ -82,7 +82,6 @@ extension LYHttpRequest : URLSessionDataDelegate{
         if self.delegate != nil{
             self.delegate?.requestStarted(request: self, response: response)
         }
-        
         print(dataTask.taskIdentifier)
         completionHandler(.allow)
     }
@@ -91,7 +90,7 @@ extension LYHttpRequest : URLSessionDataDelegate{
         if self.delegate != nil{
             self.delegate?.request(request: self, didReceiveData: data)
         }
-        print(String.init(format: "%d/%d=%.2f", dataTask.progress.completedUnitCount,dataTask.progress.totalUnitCount,dataTask.progress.completedUnitCount/dataTask.progress.totalUnitCount))
+//        print(String.init(format: "%d/%d=%.2f", dataTask.progress.completedUnitCount,dataTask.progress.totalUnitCount,dataTask.progress.completedUnitCount/dataTask.progress.totalUnitCount))
 //        dataTask.progress.fractionCompleted
     }
     

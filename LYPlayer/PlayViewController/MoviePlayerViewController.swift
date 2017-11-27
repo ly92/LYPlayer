@@ -67,6 +67,7 @@ class MoviePlayerViewController: UIViewController {
         let playerModel = LYPlayerModel()
         playerModel.videoURL = self.url
         
+        LYDownloadManager.share().downloadFileUrl(url: self.url, fileName: (self.url as NSString).lastPathComponent, fileImage: nil)
         
 //        playerModel.videoURL = "/Users/ly/Library/Developer/CoreSimulator/Devices/F74FC8DA-0C29-4D46-896C-2AFEA35A2272/data/Containers/Data/Application/0C549169-EC14-43E8-924B-D2A87E098A74/Library/Caches/566052304.mp4"
         playerModel.resolutionArray = [["高清":"http://baobab.wdjcdn.com/14571455324031.mp4"],["标清":"http://baobab.wdjcdn.com/1457521866561_5888_854x480.mp4"]]
